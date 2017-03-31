@@ -1,0 +1,147 @@
+// variables for k-order-info elements
+
+$k-order-horizontal-spacing: 15px;
+$k-order-vertical-spacing: 15px;
+
+.k-order-info-unit {
+    box-sizing: border-box;
+    @media (min-width: $units-stack) {
+        float: left;
+        width: 45%;
+        padding-left: $k-order-horizontal-spacing;
+    }
+    @media(min-width: $screen-md-min) {
+        padding-left: $k-order-horizontal-spacing * 2;
+        width: 40%;
+    }
+}
+
+.k-order-info {
+    font-size: 0; // HACK for display: inline-block elements and width percentages
+    background-color: lighten($gray-ghost, 5%);
+    padding: 0 $k-order-horizontal-spacing;
+    box-sizing: border-box;
+    display: none;
+    @media (min-width: $units-stack) {
+        display: block;
+    }
+    &__top {
+        font-size: $font-size-base + 4;
+        border-bottom: 1px solid $gray-lighter;
+        padding: $k-order-vertical-spacing * 2 0;
+        text-align: right;
+        h3 {
+            color: $gray-dark;
+            float: left;
+            font-size: $font-size-base + 4;
+        }
+        a {
+            text-decoration: none;
+            color: $gray-dark;
+            font-size: $font-size-base;
+            -webkit-transition: all 200ms ease-in-out;
+            transition: all 200ms ease-in-out;
+            &:hover {
+                color: $color-primary;
+            }
+        }
+    }
+    
+    &__table {
+        display: table;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    &__wrap {
+        display:table-row-group;
+        vertical-align: middle;
+    }
+    
+    &__row {
+        display: table-row;
+        vertical-align: inherit;
+        border-bottom: 1px solid $gray-lighter;
+    }
+    
+    &__col {
+        display: table-cell;
+        vertical-align: inherit;
+        padding: $k-order-vertical-spacing 0;
+    }
+    
+    &__total {
+        font-size: $font-size-base + 1;
+        color: $gray-regular;
+        text-align: right;
+    }
+}
+
+.k-order-item-img {
+      width: 40px;
+    height: 40px;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    @media screen and (min-width: $cart-mobile-view) {
+      vertical-align: middle;  
+    }
+    img {
+        @extend .k-img-absolute; // find this class on _vars.scss
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+
+.k-order-item-text {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 15px;
+    margin-bottom: 50px;
+    width: calc(100% - 95px);
+    @media screen and (min-width: $cart-mobile-view) {
+       vertical-align: middle; 
+        margin-left: $k-order-horizontal-spacing;
+        margin-bottom: 0;
+        width: calc(100% - 40px - #{$k-order-horizontal-spacing});
+    }
+    h4 {
+        font-weight: 400;
+        color: $gray-dark;
+        margin-bottom: 2px; 
+        font-size: $font-size-base + 1;
+        margin-right: 35px;
+        @media screen and (min-width: $cart-mobile-view) {
+            margin-right: 0;
+        }
+    }
+    p {
+      font-size: $font-size-base;  
+       color: $gray-light;
+      line-height: 20px;
+    }
+}
+
+.k-order-totals {
+    font-size: $font-size-base + 2;
+    text-align: right;
+    padding: $k-order-vertical-spacing 0;
+    color: $gray-regular;
+    > div {
+        padding: 5px 0;
+        span {
+            &:last-child {
+                display: inline-block;
+                width: 85px;
+                text-align: right;
+            }
+        }
+    }
+    &__total {
+        span {
+            font-weight: 700;
+            font-size: $font-size-base + 4;
+            color: $gray-darker;
+        }
+    }
+}

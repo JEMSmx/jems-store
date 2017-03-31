@@ -1,0 +1,33 @@
+env:
+  global:
+    - PROJECT_NAME: "litecart-demo"
+    # master SHA256-0d1103481c30f3b41488722a91e09c56ad6416937799283a41f51b4b5615b779
+    - secure: ""
+    # beta SHA256-826e9215fe487a7f664f2cc3c91c5bb053278c6f7f20dfb0232a4342483de23f
+    - secure: ""
+install:
+  - npm install -g csslint htmlhint
+  - wget -O /tmp/phantomjs-netlog.js https://gist.githubusercontent.com/memiux/0e8377f9361fefce64e848e74fa3232c/raw/phantomjs-netlog.js
+script:
+  - "find $PWD -path */public_html/includes/templates/$PROJECT_NAME.catalog/* -type f -name k-*.css -size +1c | xargs --no-run-if-empty csslint"
+  - "find $PWD -path */public_html/includes/templates/$PROJECT_NAME.catalog/* -type f -name *.html -size +1c | xargs --no-run-if-empty htmlhint"
+  - "find $PWD -path */public_html/includes/templates/$PROJECT_NAME.catalog/* -type f -name *.html | xargs --no-run-if-empty -I{} phantomjs --ignore-ssl-errors=true --ssl-protocol=any /tmp/phantomjs-netlog.js file://{}"
+notifications:
+  email: false
+language: node_js
+node_js:
+  - "5.1"
+before_deploy:
+  - "wget -O /tmp/git-ftp https://gist.githubusercontent.com/memiux/f4f36ff274bd827aac573520242dea8a/raw/git-ftp && chmod +x /tmp/git-ftp"
+  - export GIT_FTP_URL_BRANCH=GIT_FTP_URL_$TRAVIS_BRANCH
+  - '/tmp/git-ftp add-scope $TRAVIS_BRANCH "${!GIT_FTP_URL_BRANCH}"'
+  - git config git-ftp.syncroot public_html
+deploy:
+  - provider: script
+    script: /tmp/git-ftp push -s $TRAVIS_BRANCH -v
+    on:
+      branch: master
+  - provider: script
+    script: /tmp/git-ftp push -s $TRAVIS_BRANCH -v -f
+    on:
+      branch: beta

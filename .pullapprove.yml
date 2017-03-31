@@ -1,0 +1,27 @@
+approve_by_comment: true
+approve_regex: '^(Approved|:shipit:|:\+1:|LGTM)'
+reject_regex: '^(Rejected|:-1:)'
+reset_on_push: true
+reset_on_reopened: true
+always_pending:
+    title_regex: '(WIP|wip)'
+    labels:
+        - wip
+    explanation: 'This PR is a work in progress...'
+reviewers: 
+  - 
+    conditions: 
+      branches: 
+        - master
+    members: 
+      - memiux
+    name: admins
+    required: 1
+  - 
+    conditions: 
+      labels: 
+        - design-review
+    members: 
+      - mikemotion
+    name: designers
+    required: 1

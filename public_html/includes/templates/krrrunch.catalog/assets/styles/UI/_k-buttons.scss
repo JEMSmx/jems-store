@@ -1,0 +1,74 @@
+.k-btn {
+    display: inline-block;
+    font-family: inherit;
+    height: 2.3em;
+    font-size: 1.333em;
+    background-color: $color-primary;
+    line-height: 2.3em;
+    color: $white;
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: 700;
+    width: 100%;
+    @media (min-width: $units-stack) {
+        padding: 0 3em;
+        width: auto;
+    }
+    &:hover,
+    &:active,
+    &:focus,
+    &:visited{
+        text-decoration:none;
+        color: $white;
+    }
+
+    &:hover{
+        box-shadow:0 0 5px rgba(0, 0, 0, 0.5);
+        background-color: darken($color-primary, 8%);
+    }
+
+    &:active,
+    &:focus{
+        outline:none;
+        box-shadow:0 0 5px rgba(0, 0, 0, 0.5) inset;
+    }
+
+    &::-moz-focus-inner {
+        border: 0;
+        padding: 0;
+    }
+}
+
+// --- Size ---
+
+.k-btn {
+    &--sm{
+      height: 2em;
+      line-height:2;
+      padding-left: 0.5em;
+      padding-right:0.5em;
+    }
+    
+    &--lg{
+      height: 4em;
+      line-height:4;
+      padding-left: 1.5em;
+      padding-right:1.5em;
+;
+    }
+    &--xg {
+      height: 5em;
+      line-height:5;
+      padding-left: 2em;
+      padding-right:2em;      
+    }  
+}
+
+.k-btn {
+    &--full {
+        width: 100%;
+        text-align: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+}

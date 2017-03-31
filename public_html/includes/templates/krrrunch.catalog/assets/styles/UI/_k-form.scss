@@ -1,0 +1,246 @@
+$form-horizontal-gutter: 15px;
+$form-vertical-spacing: $form-horizontal-gutter;
+$form-font-size: 15px;
+
+.k-form-unit {
+    box-sizing: border-box;
+    @media (min-width: $units-stack) {
+        float: left;
+        width: 55%;
+        padding-right: $form-vertical-spacing;
+    }
+    @media (min-width: $screen-md-min) {
+        width: 60%;
+        padding-right: $form-vertical-spacing * 2;
+    }
+}
+
+
+.k-form {
+    width: 100%;
+    font-family: Helvetica, Arial, sans-serif;
+    &__section {
+        font-size: 0; // HACK for display: inline-block elements with percentages;
+        &:not(:last-child) {
+           margin-bottom: $form-vertical-spacing + 10; 
+           border-bottom: 1px solid $gray-lighter;
+        }
+    }
+    &--rounded {
+        .k-input__input {
+            border-radius: 4px;
+        }
+        
+        .k-select {
+            border-radius: 4px;
+        }
+    }
+    
+    &__title {
+        margin-bottom: $form-vertical-spacing + 10;
+        color: $gray-dark;
+        padding-bottom: $form-vertical-spacing + 10;
+        border-bottom: 1px solid $gray-lighter;
+        font-family: $font-family-base;
+    }
+    
+    &__subtitle {
+        font-size: 18px;
+        margin-bottom: $form-vertical-spacing + 10;
+        color: $gray-dark;
+        font-family: $font-family-base;
+    }
+}
+
+
+.k-input {
+    position: relative;
+    box-sizing: border-box;
+    margin-bottom: $form-vertical-spacing;
+    
+    &--focused {
+        .k-input__label {
+           color: $color-primary; 
+        }
+    }
+    
+    &--active {
+        .k-input__label {
+          opacity: 1;
+          visibility: visible;
+          top: 0px;
+        }
+        .k-input__input {
+            padding: 17px 8px 5px 8px;
+        }
+    }
+    
+    &__label {
+      -webkit-transition: all 200ms ease-in-out;
+      transition: all 200ms ease-in-out;
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      display: inline-block;
+      top: 9px;
+      left: 5px;
+      padding: 5px 3px 3px 3px;
+      font-size: 11px;
+      line-height: 1em;
+      font-weight: bold;
+      color: $gray-dark;
+    }
+    
+    &__input {
+      -webkit-transition: all 200ms ease-in-out;
+      transition: all 200ms ease-in-out;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      outline: none;
+      margin-top: 0;
+      margin-left: 0;
+      padding: 11px 8px;
+      font-size: $form-font-size;
+      box-shadow: 0 0 0 1px #d9d9d9;
+      height: 40px;
+      box-sizing: border-box;
+      display: inline-block;
+      width: 100%;
+      border: none;
+      color: $gray-dark;
+        &::moz-selection, &::selection {
+            color: $white;
+            background-color: #2a8dea;
+        }
+        &:focus {
+           box-shadow: 0 0 0 2px $color-primary;
+        }
+    }
+    
+    &--error {
+        .k-input__input {
+            box-shadow: 0 0 0 2px $color-danger;
+            &:focus, &:active {
+                box-shadow: 0 0 0 2px $color-danger;
+            }
+        }
+    }
+}
+
+// RESPONSIVE SIZES FOR MULTIPLES INPUTS INLINE - .k-form__grid
+
+.k-form__grid {
+    @media screen and (min-width: $units-stack) {
+        margin-bottom: $form-vertical-spacing;
+        .k-grid-half {
+            width: calc(50% - #{$form-horizontal-gutter / 2});
+            &:last-of-type {
+                margin-left: $form-horizontal-gutter;
+            }
+        }
+    
+        .k-grid-thirds {
+            width: calc(33.33% - #{$form-horizontal-gutter * 2 / 3});
+            &:not(:first-of-type) {
+                margin-left: $form-horizontal-gutter;
+            }
+        }
+    
+        .k-grid-quarters {
+            width: calc(25% - #{$form-horizontal-gutter * 3 / 4}) ;
+            &:not(:first-of-type) {
+                margin-left: $form-horizontal-gutter;
+            }   
+        }
+        
+        > div {
+             display: inline-block;
+            vertical-align: middle;
+            margin-bottom: 0;
+            & > div {
+                @media (min-width: $units-stack) {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
+
+// STYLING FOR <select> element
+
+.k-select {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    border: 1px solid $gray-lighter;
+    width: 100%;
+    overflow: hidden;
+    //background-color: $white;
+    font-size: $form-font-size;
+    height: 40px;
+    //transform: translate3d(0,0,0);
+    -webkit-transition: all 200ms ease-in-out;
+    transition: all 200ms ease-in-out;
+    margin-bottom: $form-vertical-spacing;
+    &:before {
+        content:'';
+        width: 30px;
+        height: 30px;
+        background: url("../images/k-boilerplate-arrowdown.gif") no-repeat center;
+        background-color: transparent;
+        position: absolute;
+        right: 4px;
+        top: 0;
+        bottom: 0;
+        margin: auto 0;
+        z-index: -1;
+        opacity: 0.4;
+        -webkit-transition: all 200ms ease-in-out;
+        transition: all 200ms ease-in-out;
+        transform: rotate(0deg);
+    }
+    @media (min-width: $units-stack) {
+        margin-bottom: 0;
+    }
+    &__select {
+    padding: 5px 8px;
+    width: 100%;
+    height: 100%;
+    display: block;
+    color: $gray-light;
+    border: none;
+    box-shadow: 0 0 transparent;
+    background-color: transparent;
+    background-image: none;
+    line-height: $font-size-base + 4;
+    -webkit-transition: all 200ms ease-in-out;
+    transition: all 200ms ease-in-out;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+        &:focus, &:active {
+            outline: none;
+            box-shadow: 0 0 transparent;
+        }
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    &--open {
+     box-shadow: 0 0 0 2px $color-primary;
+        &:before {
+            opacity: 1;
+            transform: rotate(180deg);
+        }
+        .k-select__select {
+            color: $gray-dark;
+             //border: 2px solid $color-primary;
+        }
+    }
+    &--changed {
+        .k-select__select {
+           color: $gray-dark; 
+        }
+    }
+}

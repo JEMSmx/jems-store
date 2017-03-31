@@ -1,0 +1,21 @@
+.basic-page {
+  margin-top: 50px;
+  margin-bottom: 50px;
+    .k-wrap {
+        h1 {
+          margin-bottom: 32px;
+        }
+        h2, h3, h4, h5, h6 {
+            margin-bottom: 16px;
+            margin-top: 24px;
+        }
+        p {
+            margin-bottom: 16px;
+        }
+        * {
+            &:last-child {
+                padding-bottom: 0;
+            }
+        }
+    }
+}

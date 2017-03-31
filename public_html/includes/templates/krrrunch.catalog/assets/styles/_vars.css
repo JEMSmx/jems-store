@@ -1,0 +1,200 @@
+/* line 4, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-color-primary {
+  color: #3b8c41; }
+
+/* line 4, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-color-primary {
+  background-color: #3b8c41; }
+
+/* line 5, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-color-secondary {
+  color: #000000; }
+
+/* line 5, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-color-secondary {
+  background-color: #000000; }
+
+/* line 6, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-color-inverse {
+  color: #fff; }
+
+/* line 6, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-color-inverse {
+  background-color: #fff; }
+
+/* line 7, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-color-success {
+  color: #5cb85c; }
+
+/* line 7, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-color-success {
+  background-color: #5cb85c; }
+
+/* line 8, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-color-info {
+  color: #5bc0de; }
+
+/* line 8, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-color-info {
+  background-color: #5bc0de; }
+
+/* line 9, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-color-warning {
+  color: #f0ad4e; }
+
+/* line 9, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-color-warning {
+  background-color: #f0ad4e; }
+
+/* line 10, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-color-danger {
+  color: #d9534f; }
+
+/* line 10, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-color-danger {
+  background-color: #d9534f; }
+
+/* line 13, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-gray-base {
+  color: black; }
+
+/* line 13, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-gray-base {
+  background-color: black; }
+
+/* line 14, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-gray-darker {
+  color: #262626; }
+
+/* line 14, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-gray-darker {
+  background-color: #262626; }
+
+/* line 15, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-gray-dark {
+  color: #595959; }
+
+/* line 15, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-gray-dark {
+  background-color: #595959; }
+
+/* line 16, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-gray-regular {
+  color: gray; }
+
+/* line 16, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-gray-regular {
+  background-color: gray; }
+
+/* line 17, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-gray-light {
+  color: #a6a6a6; }
+
+/* line 17, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-gray-light {
+  background-color: #a6a6a6; }
+
+/* line 18, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-gray-lighter {
+  color: #d9d9d9; }
+
+/* line 18, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-gray-lighter {
+  background-color: #d9d9d9; }
+
+/* line 19, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-gray-ghost {
+  color: #e6e6e6; }
+
+/* line 19, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-bg-gray-ghost {
+  background-color: #e6e6e6; }
+
+/* line 27, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-vs-50p {
+  margin-bottom: 50px; }
+
+/* line 28, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-vs-25p {
+  margin-bottom: 25px; }
+
+/* line 51, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+body {
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  background-color: #ffffff;
+  font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: antialiased; }
+
+/* line 61, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+a, button {
+  cursor: potiner; }
+
+/* line 64, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+*:focus {
+  outline-color: none; }
+
+/* line 67, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+ul, ol {
+  padding-left: 18px;
+  color: #595959; }
+  /* line 70, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+  ul.k-list, ol.k-list {
+    padding: 0;
+    margin: 0;
+    list-style: none; }
+
+/* line 77, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+h1, h2, h3, h4, h5, h6, p, figure, ul, li {
+  margin: 0;
+  padding: 0;
+  word-break: break-word; }
+
+/* line 83, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Quicksand", sans-serif;
+  color: #000000; }
+
+/* line 89, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+a {
+  text-decoration: none;
+  color: #5cb85c;
+  -webkit-transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in-out; }
+  /* line 94, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+  a:hover {
+    color: #3d8b3d; }
+
+/* line 99, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+p {
+  color: #595959;
+  line-height: 1.6; }
+
+/* line 106, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.k-img-absolute {
+  display: block;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  right: 0;
+  margin: auto; }
+
+/* line 116, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0; }
+
+/* line 128, /Users/ErickLeos/Dropbox/Dev/litecart-demo/public_html/includes/templates/krrrunch.catalog/assets/styles/_vars.scss */
+img {
+  max-width: 100%; }
+
+/*# sourceMappingURL=_vars.css.map */

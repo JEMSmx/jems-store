@@ -1,0 +1,66 @@
+// hacking "gridism.css" a little bit.
+
+.k-workspace {
+    // won't use "wrap wider";
+    box-sizing: border-box;
+    .k-wrap {
+        margin: 0 auto; 
+        padding-left: 20px;
+        padding-right: 20px;
+        box-sizing: border-box;
+        @media screen and (min-width: $units-stack) {
+            max-width: 800px;
+        }
+        @media screen and (min-width: $screen-sm-min) {
+            max-width: none;
+            width: 808px;
+        }
+        @media screen and (min-width: $screen-md-min) {
+            width: 1032px;
+        }
+        @media screen and (min-width: $screen-lg-min) {
+            width: 1240px;
+        }
+        &--fluid {
+            @media screen and (min-width: $units-stack) {
+                width: 100%;
+                max-width: 1240px;
+            }
+        }
+    }
+    .k-wrap-80 {
+      margin: 0 auto;
+      padding-left: 20px;
+      padding-right: 20px;
+      box-sizing: border-box;
+      max-width: 1240px * .8;
+    }
+    .grid {
+        .unit {
+            transition: width 200ms ease-in-out;
+            &:first-of-type {
+                padding-left: 0;
+            }
+            &:last-of-type {
+                padding-right: 0; 
+            }
+        }
+         &:not(.no-stacking-on-mobiles) {
+            > .unit {
+                @media (max-width: $units-stack) {
+                    width: 100%;
+                    padding-left: 0;
+                    padding-right: 0;
+                }
+            }
+        }
+    }
+}
+
+.grid {
+  .half {
+    @media screen and (max-width: 768px){
+      width: 100%;
+    }
+  }
+}

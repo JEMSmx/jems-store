@@ -1,0 +1,46 @@
+
+  .k-home-alert {
+    background-color: $color-primary;
+    display: block;
+    padding-right: 20px;
+    padding-left: 20px;
+    &-container {
+      margin-right: auto;
+      margin-left: auto;
+      max-width: 1180px;
+      display: flex;
+      align-items: center;
+      &-center {
+        width: 100%;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        p {
+          font-size: 18px;
+          color: $color-inverse;
+          margin-right: 15px;
+          text-align: center;
+          a {
+            color: $color-inverse;
+            &:hover {
+              color: $color-inverse;
+            }
+            &:visited {
+              color: $color-inverse;
+            }
+          }
+        }
+      }
+      &-close {
+        cursor: pointer;
+        padding: 20px;
+        img {
+          margin-left: auto;
+          max-width: 15px;
+          height: auto;
+        }
+        &:hover {
+          opacity: .8;
+        }
+      }
+    }
+  }

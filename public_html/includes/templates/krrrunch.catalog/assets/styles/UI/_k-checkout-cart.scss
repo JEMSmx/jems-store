@@ -1,0 +1,287 @@
+$cart-products-spacing: 20px;
+$cart-mobile-view: 630px;
+
+.main-checkout-cart {
+    font-size: $font-size-base + 4;
+}
+
+.k-cart-products {
+    font-size: $font-size-base + 4;  // a lot* of the other font-sizes are regulated by this, please edit carefully;
+    display: block;
+    border-spacing: 2px;
+    border-collapse: collapse;
+    width: 100%;
+    border-color: $gray-lighter;
+    @media screen and (min-width: $cart-mobile-view) {
+        display: table;
+    }
+    &__wrap {
+        display: block;
+        vertical-align: middle;
+        border-color: inherit;
+        @media screen and (min-width: $cart-mobile-view) {
+            display: table-row-group;
+        }
+    }
+    
+    &__titles {
+        display: table-cell;
+        font-weight: 700;
+    }
+    
+    
+    &__col {
+        position: relative;
+        @media screen and (min-width: $cart-mobile-view) {
+           display: table-cell; 
+           padding: $cart-products-spacing 0;
+           vertical-align: inherit;
+           width: calc(16.66% - 10px);
+        }
+        &.k-cart-item-total {
+            display: none;
+            @media screen and (min-width: $cart-mobile-view) {
+                display: table-cell;
+            }
+        }
+        &:not(:first-of-type) {
+            text-align: center;
+        }
+    }
+    
+    &__row {
+        display: block;
+        vertical-align: inherit;
+        border-bottom: 1px solid $gray-lighter;
+        position: relative;
+        padding: $cart-products-spacing 0;
+        @media screen and (min-width: $cart-mobile-view) {
+            display: table-row;
+            padding: 0;
+        }
+        &:nth-child(2) {
+            border-top: 1px solid $gray-lighter;
+            @media (min-width: $cart-mobile-view) {
+                border-top: 0;
+            }
+        }
+    }
+    
+    &__headings {
+        border-top: 1px solid $gray-lighter;
+        border-bottom: 1px solid $gray-lighter;
+        display: none;
+        @media screen and (min-width: $cart-mobile-view) {
+            display: table-row;
+        }
+        h4 {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size:  0.778em;
+            display: table-cell;
+            padding: $cart-products-spacing - 5 0 ($cart-products-spacing - 5) - 3;
+            &:not(:first-child) {
+                text-align: center;
+            }
+        }
+        
+        .k-cart-remove {
+            padding: 0;
+        }
+    }
+    
+}
+
+.k-cart-item-info {
+    font-size: 0;
+    @media screen and (min-width: $cart-mobile-view) {
+        width: 50%;
+    }
+}
+
+.k-cart-item-img {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    @media screen and (min-width: $cart-mobile-view) {
+      vertical-align: middle;  
+    }
+    img {
+        @extend .k-img-absolute; // find this class on _vars.scss
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+
+.k-cart-item-text {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 15px;
+    margin-bottom: 50px;
+    width: calc(100% - 95px);
+    @media screen and (min-width: $cart-mobile-view) {
+       vertical-align: middle; 
+        margin-left: $cart-products-spacing;
+        margin-bottom: 0;
+        width: calc(100% - 80px - #{$cart-products-spacing});
+    }
+    h4 {
+        font-weight: 400;
+        color: #1a1a1a;
+        margin-bottom: 6px; 
+        font-size: $font-size-base + 2;
+        margin-right: 35px;
+        @media screen and (min-width: $cart-mobile-view) {
+            font-size: $font-size-base + 4;
+            margin-right: 0;
+        }
+    }
+    p {
+      font-size: $font-size-base + 2;  
+       color: $gray-light;
+      line-height: 20px;
+    }
+}
+
+.k-cart-item-price, .k-cart-item-total {
+    padding-bottom: 7px;
+    position: absolute;
+    bottom: $cart-products-spacing;
+    right: 0;
+    @media screen and (min-width: $cart-mobile-view) {
+        padding-bottom: $cart-products-spacing;
+        position: static;
+    }
+    p {
+        color: $gray-dark;
+        font-size: $font-size-base + 4;
+    }
+}
+
+.k-cart-item-quantity {
+    position: absolute;
+    left: 95px;
+    bottom: $cart-products-spacing;
+    @media screen and (min-width: $cart-mobile-view) {
+        position: static;
+    }
+    input {
+        width: 43px;
+        height: 32px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+}
+
+.k-cart-remove {
+    width: 30px;
+    position: absolute;
+    top: 15px;
+    right: 0;
+    svg {
+        width: 15px;
+        height: 15px;
+    }
+    button {
+        background: transparent;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        line-height: 44px;
+        box-shadow: 0 0 transparent;
+        border: 1px solid transparent;
+        opacity: 0.4;
+        transition: all 150ms ease-in-out;
+        &:hover,
+        &:focus,
+        &:active {
+            //border-color: $gray-regular;
+            outline: none;
+        }
+        
+        &:hover {
+            cursor: pointer;
+            //background-color: $gray-ghost;
+            opacity: 0.9;
+        }
+    }
+    @media screen and (min-width: $cart-mobile-view) {
+        position: static;
+    }
+}
+
+// ------ K-CART-SUMMARY ---
+
+.k-cart-summary {
+    border-bottom: 1px solid $gray-lighter;
+}
+
+.k-cart-totals {
+    font-size: 0;
+    text-align: right;
+    padding: $cart-products-spacing 0;
+    color: $gray-regular;
+    > div {
+        font-size: $font-size-base + 2;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    &__numbers {
+        margin-left: 20px;
+        p {
+            margin-bottom: $cart-products-spacing - 10;
+            &:last-child {
+                font-weight: 700;
+                font-size: $font-size-base + 4;
+                color: $gray-darker;
+                margin-bottom: 0;
+            }
+        }
+    }
+    &__titles {
+        h4 {
+            font-weight: 400;
+            margin-bottom: $cart-products-spacing - 10;
+            &:last-child {
+                font-weight: 700;
+                font-size: $font-size-base + 4;
+                color: $gray-darker;  
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+// ----- K-CART-ACTION --------
+
+.k-cart-action {
+    padding: $cart-products-spacing 0;
+    text-align: center;
+    font-size: $font-size-base + 4;
+    .k-btn {
+        display: block;
+        margin: 0 auto;
+        @media screen and (min-width: $cart-mobile-view) {
+            float: right;
+            display: inline-block;
+        }
+    }
+}
+
+.regresar-link {
+    text-decoration: none;
+    color: $gray-regular;
+    display: inline-block;
+    margin-top: 20px;
+    @media screen and (min-width: $units-stack) {
+        margin-top: 18px;
+        float: left;
+    }
+    &:hover {
+        text-decoration: none;
+        color: $color-primary;
+    }
+}
+
