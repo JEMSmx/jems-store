@@ -1,8 +1,8 @@
 env:
   global:
-    - PROJECT_NAME: "litecart-demo"
+    - PROJECT_NAME: "jems-store"
     # master SHA256-0d1103481c30f3b41488722a91e09c56ad6416937799283a41f51b4b5615b779
-    - secure: ""
+    - secure: "K294+Udq/iCMBgiLjLlbp0yEj0RiTldOP6w/VbP2eRpPL2SiVZwNiDJpwykD59lbJc0n1OcpHn/+hYnDwqbl8LFWd6R72CRER2SWbau3k+NNpmOzYJIVnNruvNlhQBoUyDf15jMQA2j1/SBgx52PQmBMlYNH0HI7jEU80gdSM2ItlEGdoCr3XQ17wTr0lWiJNTVNcMDIdWOGLmjn9vESd0OCexTQ0wRz9adDgCyQYh7gAFoBKtZtSyuXk5Vidp6AngMVEPT498enaZG7+zEnq5FGIfXVZ1Vlk7+zvyKo6GISfNQdgAiCeigm1QJyPkmc+53DzGMyD8XXNwpZ6sdlwnM7bdPsRHZLqmH3nw4bnwIckEXJ6Vp1Uo9FACqsTbavHkqWQWFKSR+qXQMlJoSrXkQpYupsKp1GDle6DdqY/jnfyvK+gi3HibIjHgC/XA9d76X5taqruOsOgNoX1NArnX1vEusqD4UaJIBcurCuAf8U/jlWERaCphvxNQakHaEiXi5BeIKAMGVsDPCk5u0sxL/wfoxFn5gEyb7/Q6mO0Vs7iZZypdx2V4xhAuspufepzN+mbDLZTLjeuPUMd81keFYOS/+ejUOeusKYeLDEYFIS9tXS5GwZOSKL/7fVZpwDB0jnM0nn7r6ncoOY4CmnICGil1SeFOyzhxJLAsOSWeQ="
     # beta SHA256-826e9215fe487a7f664f2cc3c91c5bb053278c6f7f20dfb0232a4342483de23f
     - secure: ""
 install:
