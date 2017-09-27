@@ -1,0 +1,926 @@
+code,en
+categories:head_title,Categories
+categories:meta_description,
+char_comma,Comma
+char_dot,Dot
+char_nonbreaking_space,Non-Breaking Space
+char_single_quote,Single quote
+char_space,Space
+checkout:head_title,Checkout
+cm_google_maps:description_priority,Process this module by the given priority value.
+cm_google_maps:description_status,Enables or disables the module.
+cm_google_maps:title_priority,Priority
+cm_google_maps:title_status,Status
+create_account:head_title,Create Account
+customer_service:head_title,Customer Service
+customer_service:meta_description,
+description_click_printable_copy,Click here for a printable copy
+description_fixed_header,Fixate the header position making it stick on top while scroll.
+description_logged_out,You are now logged out.
+description_no_existing_product_groups,There are no existing product groups.
+description_no_items_in_cart,There are no items in your cart.
+description_order_completed,Thank you for shopping in our store. We will process your order shortly.
+description_order_status_email_message,Compose a message that will be used as email body or leave blank to display the order copy.
+description_scan_before_importing_translations,It is recommended to always scan your installation for unregistered translations before performing an import or export.
+description_scan_for_translations,This will scan your files for translations. New translations will be added to the database.
+description_set_as_default_currency,Set as default currency
+description_set_as_default_language,Set as default language
+description_set_as_store_currency,Set as store currency
+description_set_as_store_language,Set as store language
+description_set_mysql_collation,This will recursively convert the charset and collation for all selected database tables and belonging columns.
+email_account_created,"Welcome %customer_firstname %customer_lastname to %store_name!
+
+Your account has been created. You can now make purchases in our online store and keep track of history.
+
+Login using your email address %customer_email and password %customer_password.
+
+%store_name
+
+%store_link"
+email_body_password_reset,We have set a new password for your account at %store_link. Use your email %email and new password %password to log in.
+email_subject_account_created,"Welcome %customer_firstname %customer_lastname to %store_name!
+
+Your account has been created. You can now make purchases in our online store and keep track of history.
+
+Login using your email address %customer_email and password %customer_password.
+
+%store_name
+
+%store_link"
+email_subject_customer_account_created,Customer Account Created
+email_subject_new_password,New Password
+error_400_bad_request,The server cannot or will not process the request due to a client error.
+error_403_forbidden,Access to the requested file is forbidden
+error_404_not_found,The requested file could not be found
+error_410_gone,The requested file is no longer available
+error_account_expired,The account expired %s
+error_account_has_been_blocked,The account has been temporary blocked %d minutes
+error_account_inactive,"Your account is inactive, contact customer support"
+error_account_is_blocked,The account is blocked until %s
+error_account_suspended,The account is suspended
+error_already_logged_in,You are already logged in
+error_cannot_add_to_cart_invalid_quantity,Cannot add product to cart. Invalid quantity
+error_cannot_delete_default_currency,You must change the default currency before it can be deleted.
+error_cannot_delete_default_language,You must change the default language before it can be deleted.
+error_cannot_delete_framework_language,You cannot delete the PHP framework language. But you can disable it.
+error_cannot_delete_store_currency,You must change the store currency before it can be deleted.
+error_cannot_delete_store_language,You must change the store language before it can be deleted.
+error_cannot_disable_default_currency,You cannot disable the default currency
+error_cannot_disable_default_language,You must change the default language before disabling it.
+error_cannot_disable_store_currency,You cannot disable the store currency
+error_cannot_disable_store_language,You must change the store language before disabling it.
+error_cannot_mount_category_to_self,Cannot mount category to itself
+error_cannot_rename_default_currency,You must change the default currency before renaming it.
+error_cannot_rename_default_language,You must change the default language before renaming it.
+error_cannot_rename_framework_language,"You cannot not rename the framework language, but you can disable it"
+error_cannot_rename_store_currency,You must change the store currency before renaming it.
+error_cannot_rename_store_language,You must change the store language before renaming it.
+error_cannot_select_payment_option_with_error,Cannot set a payment option that contains errors.
+error_cannot_select_shipping_option_with_error,Cannot set a shipping option that contains errors.
+error_cannot_set_disabled_default_currency,You cannot set a disabled currency as default currency.
+error_cannot_set_disabled_default_language,You cannot set a disabled language as default language.
+error_cannot_set_disabled_store_currency,You cannot set a disabled currency as store currency.
+error_cannot_set_disabled_store_language,You cannot set a disabled language as store language.
+error_category_must_be_nested_in_another_category_to_unmount,A category must be nested in another category to be unmounted
+error_code_database_conflict,Another entry with the given code already exists in the database
+error_delete_category_not_empty_products,The category could not be deleted because there are products linked to it.
+error_delete_category_not_empty_subcategories,The category could not be deleted because there are subcategories linked to it.
+error_delete_manufacturer_not_empty_products,The manufacturer could not be deleted because there are products linked to it.
+error_delete_supplier_not_empty_products,The supplier could not be deleted because there are products linked to it.
+error_d_login_attempts_left,You have %d login attempts left until your account is blocked
+error_email_already_registered,The email address already exists in our customer database. Please login or select a different email address.
+error_email_missing,You must enter your email address.
+error_email_not_in_database,The email address does not exist in our database.
+error_empty_option_group,Error: Empty option group
+error_empty_option_value,Error: Empty option value
+error_failed_uploading_image,The uploaded image failed saving to disk. Make sure permissions are set.
+error_gtin_database_conflict,Another entry with the given GTIN already exists in the database
+error_insufficient_customer_information,"Insufficient customer information, please fill out all necessary fields."
+error_invalid_admin_template,Not a valid admin template
+error_invalid_captcha,Invalid CAPTCHA given
+error_invalid_catalog_template,Not a valid catalog template
+error_invalid_image,The image is invalid
+error_invalid_payment_option,Cannot set an invalid payment option.
+error_invalid_shipping_option,Cannot set an invalid shipping option.
+error_language_already_exists,The language already exists in the database
+error_login_invalid,"Wrong password or the account is disabled, or does not exist"
+error_missing_address1,You must enter an address.
+error_missing_city,You must enter a city.
+error_missing_code,You must enter a code
+error_missing_confirmed_password,You must confirm your password.
+error_missing_country,You must select a country.
+error_missing_dock,You must select a dock.
+error_missing_email,To reset your password you must provide an email address.
+error_missing_firstname,You must enter a first name.
+error_missing_image,You must select an image
+error_missing_lastname,You must enter a last name.
+error_missing_login_credentials,You must provide both email address and password.
+error_missing_password,You must enter a password.
+error_missing_postcode,You must enter a postcode.
+error_missing_title,You must enter a title.
+error_missing_username,You must provide a username
+error_missing_zone,You must select a zone.
+error_must_enter_code,You must enter a code
+error_must_enter_confirmed_password,You must confirm the password
+error_must_enter_email,You must enter a valid email address
+error_must_enter_name,You must enter a name
+error_must_enter_password,You must enter a password
+error_must_enter_rate,You must enter a rate
+error_must_enter_username,You must enter a username
+error_must_enter_value,You must enter a value
+error_must_provide_vqmod,You must provide a valid vQmod file
+error_must_select_at_least_one_language,You must select at least one language
+error_must_select_a_language,You must select a language
+error_must_select_category,You must select a category
+error_must_select_category_or_product,You must select a category or product
+error_must_select_geo_zone,You must select a geo zone
+error_must_select_orders,You must select orders to perform the operation
+error_must_select_products,You must select products
+error_must_select_tables,You must select at least one table
+error_must_select_tax_class,You must select a tax class
+error_name_missing,You must enter a name.
+error_not_a_supported_charset,%charset is not a supported character set
+error_not_a_valid_system_locale,%locale is not a valid system locale on this machine
+error_no_payment_method_selected,No payment method selected
+error_no_shipping_method_selected,No shipping method selected
+error_only_products_are_supported,Only products are supported for this operation
+error_order_missing_items,Your order does not contain any items
+error_page_not_found,The requested page could not be found
+error_passwords_missmatch,The passwords did not match
+error_product_options_contains_errors,The product options contains errors
+error_sending_email_for_unknown_reason,The email could not be sent for an unknown reason
+error_set_product_options,Please set your product options
+error_sku_database_conflict,Another entry with the given SKU already exists in the database
+error_store_currency_must_have_value_1,The store currency must always have the currency value 1.0.
+error_user_not_found,The user could not be found in our database
+error_wrong_username_password_combination,Wrong combination of username and password or the account does not exist.
+index:head_title,Online Store
+index:meta_description,
+job_error_reporter:description_email_receipient,The e-mail address where reports will be sent.
+job_error_reporter:description_priority,Process this module in the given priority order.
+job_error_reporter:description_report_frequency,How often the reports should be sent.
+job_error_reporter:description_status,Enables or disables the module.
+job_error_reporter:title_email_receipient,E-mail Receipient
+job_error_reporter:title_priority,Priority
+job_error_reporter:title_report_frequency,Report Frequency
+job_error_reporter:title_status,Status
+login:head_title,Login
+manufacturers:head_title,Manufacturers
+manufacturers:meta_description,
+modules:description_geo_zone,Limit this module to the selected geo zone. Otherwise leave blank.
+modules:description_order_status,Give orders made with this payment method the following order status.
+modules:description_priority,Process this module in the given priority order.
+notice_existing_customer_account_will_be_used,We found an existing customer account that will be used for this order
+order_history:head_title,Order History
+order_success:head_title,Order Success
+ot_payment_fee:description_priority,Process this module by the given priority value.
+ot_payment_fee:description_status,Enables or disables the module.
+ot_payment_fee:title_payment_fee,Payment Fee
+ot_payment_fee:title_priority,Priority
+ot_payment_fee:title_status,Status
+ot_shipping_fee:description_countries,"A coma separated list of countries to recceive free shipping e.g. SE,DK or leave blank for all."
+ot_shipping_fee:description_free_shipping_amount,Enable free shipping for orders that meet the given cart total amount or above (excluding tax). 0 = disabled
+ot_shipping_fee:description_priority,Process this module by the given priority value.
+ot_shipping_fee:description_status,Enables or disables the module.
+ot_shipping_fee:title_countries,Countries
+ot_shipping_fee:title_free_shipping_amount,Free Shipping Amount
+ot_shipping_fee:title_priority,Priority
+ot_shipping_fee:title_shipping_fee,Shipping Fee
+ot_shipping_fee:title_status,Status
+ot_subtotal:description_priority,Process this module by the given priority value.
+ot_subtotal:description_status,Enables or disables the module.
+ot_subtotal:title_priority,Priority
+ot_subtotal:title_status,Status
+ot_subtotal:title_subtotal,Subtotal
+pm_cod:description_icon,Web path of the icon to be displayed.
+pm_cod:description_payment_fee,Adds a payment fee to the order.
+pm_cod:description_status,Enables or disables the module.
+pm_cod:description_tax_class,The tax class for the fee.
+pm_cod:title_cash_on_delivery,Cash on Delivery
+pm_cod:title_confirm_order,Confirm Order
+pm_cod:title_icon,Icon
+pm_cod:title_payment_fee,Payment Fee
+pm_cod:title_status,Status
+pm_cod:title_tax_class,Tax Class
+regional_settings:head_title,Regional Settings
+settings_group:title_advanced,Advanced
+settings_group:title_checkout,Checkout
+settings_group:title_defaults,Defaults
+settings_group:title_general,General
+settings_group:title_images,Images
+settings_group:title_listings,Listings
+settings_group:title_security,Security
+settings_group:title_store_info,Store Info
+settings_key:description_auto_decimals,Show only decimals if there are any to display.
+settings_key:description_box_campaign_products_num_items,The maximum amount of items to be display in the box.
+settings_key:description_box_latest_products_num_items,The maximum amount of items to be display in the box.
+settings_key:description_box_most_popular_products_num_items,The maximum amount of items to be display in the box.
+settings_key:description_box_recently_viewed_products_num_items,The maximum amount of items to be display in the box.
+settings_key:description_box_similar_products_num_items,The maximum amount of items to be display in the box.
+settings_key:description_cache_clear,Remove all cached system information.
+settings_key:description_cache_clear_thumbnails,Remove all cached image thumbnails from disk.
+settings_key:description_cache_enabled,Enables the system cache module which caches frequently used data.
+settings_key:description_captcha_enabled,Prevent robots from posting form data by enabling CAPTCHA security.
+settings_key:description_catalog_only_mode,Disables the cart and checkout features leaving only a browsable catalog.
+settings_key:description_category_image_ratio,The aspect ratio of the category thumbnails
+settings_key:description_database_admin_link,The URL to your database manager i.e. phpMyAdmin.
+settings_key:description_data_table_rows_per_page,The number of data table rows per page.
+settings_key:description_default_country_code,The default country selected if not set otherwise.
+settings_key:description_default_currency_code,"The default currency selected, if failed to identify."
+settings_key:description_default_delivery_status_id,Default delivery status that will be preset when creating new products.
+settings_key:description_default_display_prices_including_tax,Displays prices including tax by default.
+settings_key:description_default_language_code,"The default language selected, if failed to identify."
+settings_key:description_default_quantity_unit_id,Default quantity unit that will be preset when creating new products.
+settings_key:description_default_sold_out_status_id,Default sold out status that will be preset when creating new products.
+settings_key:description_default_tax_class_id,Default tax class that will be preset when creating new products.
+settings_key:description_default_zone_code,The default zone selected if not set otherwise.
+settings_key:description_display_cheapest_shipping,Display the cheapest shipping cost on product page.
+settings_key:description_display_stock_count,Show the available amounts of products in stock.
+settings_key:description_email_order_copy,Send order copies to the following e-mail addresses. Separate by semi-colons.
+settings_key:description_fields_customer_password,"If Register Guests is enabled, show the password field letting customers set their own password. Otherwise randomly generated."
+settings_key:description_gzip_enabled,Compresses browser data. Increases the load on the server but decreases the bandwidth.
+settings_key:description_image_downsample_size,"Downsample large uploaded images to best fit within the given dimensions of ""width,height"" or leave empty. Default: 2048,2048"
+settings_key:description_image_quality,The JPEG quality for uploaded images (0-100). Default: 90
+settings_key:description_image_thumbnail_quality,The JPEG quality for thumbnail images (0-100). Default: 65
+settings_key:description_image_whitespace_color,"Set the color of any generated whitespace to the given RGB value. Default: 255,255,255"
+settings_key:description_items_per_page,The number of items to be displayed per page.
+settings_key:description_jobs_interval,The amount of minutes between each execution of jobs.
+settings_key:description_jobs_last_run,Time when background jobs where last executed.
+settings_key:description_new_products_max_age,Display the new sticker for products younger than the give age. E.g. 1 month or 14 days
+settings_key:description_product_image_clipping,The clipping method used for scaled product thumbnails.
+settings_key:description_product_image_ratio,The aspect ratio of the product thumbnails
+settings_key:description_product_image_watermark,Watermark product images with the store logo.
+settings_key:description_regional_settings_screen_enabled,Enables the regional settings screen upon first visit.
+settings_key:description_register_guests,Automatically create accounts for all guests.
+settings_key:description_round_amounts,Round currency amounts to prevent hidden decimals.
+settings_key:description_security_blacklist,Deny blacklisted clients access to the site.
+settings_key:description_security_bot_trap,Catch bad behaving bots from crawling your website by setting up a trap.
+settings_key:description_security_http_post,Deny incoming HTTP POST data from external sites by checking for valid form tickets.
+settings_key:description_security_session_hijacking,Destroy sessions that were signed for a different IP address and user agent.
+settings_key:description_security_xss,Detect common XSS attacks and deny access to the site.
+settings_key:description_seo_links_enabled,Enabling this requires .htaccess and mod_rewrite rules.
+settings_key:description_seo_links_language_prefix,Begins the SEO links with the language code i.e. /en/....
+settings_key:description_set_currency_by_language,Chain select currency when changing language.
+settings_key:description_store_country_code,The country of your store.
+settings_key:description_store_currency_code,The currency of which all prices conform to.
+settings_key:description_store_email,The store e-mail address.
+settings_key:description_store_language_code,The spoken language of your organization.
+settings_key:description_store_length_class,The prefered length class.
+settings_key:description_store_name,The name of your store.
+settings_key:description_store_phone,The store phone number.
+settings_key:description_store_postal_address,The store postal address.
+settings_key:description_store_tax_id,The store tax ID or VATIN.
+settings_key:description_store_timezone,The store time zone.
+settings_key:description_store_visiting_address,The store visiting address if applicable.
+settings_key:description_store_weight_class,The prefered weight class.
+settings_key:description_store_zone_code,The zone of your store.
+settings_key:description_webmail_link,The URL to your webmail client.
+settings_key:title_auto_decimals,Auto Decimals
+settings_key:title_box_campaign_products_num_items,Campaign Products Box: Number of Items
+settings_key:title_box_latest_products_num_items,Latest Products Box: Number of Items
+settings_key:title_box_most_popular_products_num_items,Most Popular Products Box: Number of Items
+settings_key:title_box_recently_viewed_products_num_items,Recently Viewed Products Box: Number of Items
+settings_key:title_box_similar_products_num_items,Similar Products Box: Number of Items
+settings_key:title_cache_clear,Clear System Cache
+settings_key:title_cache_clear_thumbnails,Clear Thumbnails Cache
+settings_key:title_cache_enabled,System Cache Enabled
+settings_key:title_captcha_enabled,CAPTCHA
+settings_key:title_catalog_only_mode,Catalog Only Mode
+settings_key:title_category_image_ratio,Category Images: Aspect Ratio
+settings_key:title_database_admin_link,Database Admin Link
+settings_key:title_data_table_rows_per_page,Data Table Rows
+settings_key:title_default_country_code,Default Country
+settings_key:title_default_currency_code,Default Currency
+settings_key:title_default_delivery_status_id,Default Delivery Status
+settings_key:title_default_display_prices_including_tax,Default Display Prices Including Tax
+settings_key:title_default_language_code,Default Language
+settings_key:title_default_quantity_unit_id,Default Quantity Unit
+settings_key:title_default_sold_out_status_id,Default Sold Out Status
+settings_key:title_default_tax_class_id,Default Tax Class
+settings_key:title_default_zone_code,Default Zone
+settings_key:title_display_cheapest_shipping,Cheapest Shipping
+settings_key:title_display_stock_count,Display Stock Count
+settings_key:title_email_order_copy,Order Copy Receipients
+settings_key:title_fields_customer_password,Password Field
+settings_key:title_gzip_enabled,GZIP Enabled
+settings_key:title_image_downsample_size,Downsample
+settings_key:title_image_quality,Image Quality
+settings_key:title_image_thumbnail_quality,Thumbnail Quality
+settings_key:title_image_whitespace_color,Whitespace Color
+settings_key:title_items_per_page,Items Per Page
+settings_key:title_jobs_interval,Jobs Interval
+settings_key:title_jobs_last_run,Jobs Last Run
+settings_key:title_new_products_max_age,Max Age for New Products
+settings_key:title_product_image_clipping,Product Images: Clipping Method
+settings_key:title_product_image_ratio,Product Images: Aspect Ratio
+settings_key:title_product_image_watermark,Product Images: Watermark
+settings_key:title_regional_settings_screen_enabled,Regional Settings Screen
+settings_key:title_register_guests,Register Guests
+settings_key:title_round_amounts,Round Amounts
+settings_key:title_security_blacklist,Blacklist
+settings_key:title_security_bot_trap,Bad Bot Trap
+settings_key:title_security_http_post,HTTP POST Protection
+settings_key:title_security_session_hijacking,Session Hijacking Protection
+settings_key:title_security_xss,Cross-site Scripting (XSS) Detection
+settings_key:title_seo_links_enabled,SEO Links Enabled
+settings_key:title_seo_links_language_prefix,SEO Links Language Prefix
+settings_key:title_set_currency_by_language,Set Currency by Language
+settings_key:title_store_country_code,Store Country
+settings_key:title_store_currency_code,Store Currency
+settings_key:title_store_email,Store Email
+settings_key:title_store_language_code,Store Language
+settings_key:title_store_length_class,Store Length Class
+settings_key:title_store_name,Store Name
+settings_key:title_store_phone,Store Phone Number
+settings_key:title_store_postal_address,Store Postal Address
+settings_key:title_store_tax_id,Store Tax ID
+settings_key:title_store_timezone,Store Time Zone
+settings_key:title_store_visiting_address,Store Visiting Address
+settings_key:title_store_weight_class,Store Weight Class
+settings_key:title_store_zone_code,Store Zone
+settings_key:title_webmail_link,Webmail Link
+sm_zone_weight:description_geo_zone,Geo zone to which the cost applies.
+sm_zone_weight:description_handling_fee,Enter your handling fee for the shipment.
+sm_zone_weight:description_icon,Web path of the icon to be displayed.
+sm_zone_weight:description_method,The calculation method that should to be used for the rate tables where a condition is met for shipping weight.
+sm_zone_weight:description_priority,Process this module by the given priority value.
+sm_zone_weight:description_status,
+sm_zone_weight:description_tax_class,The tax class for the shipping cost.
+sm_zone_weight:description_weight_class,The weight class for the rate table.
+sm_zone_weight:description_weight_rate_table,Ascending rate table of the shipping cost. The format must be weight:cost;weight:cost;.. (E.g. 5:8.95;10:15.95;..)
+sm_zone_weight:title_geo_zone,Geo Zone
+sm_zone_weight:title_handling_fee,Handling Fee
+sm_zone_weight:title_icon,Icon
+sm_zone_weight:title_method,Method
+sm_zone_weight:title_non_matched_zones,Non-matched Zones
+sm_zone_weight:title_option_name_zone_x,
+sm_zone_weight:title_priority,Priority
+sm_zone_weight:title_status,Status
+sm_zone_weight:title_tax_class,Tax Class
+sm_zone_weight:title_weight_class,Weight Class
+sm_zone_weight:title_weight_rate_table,Weight Rate Table
+sm_zone_weight:title_zone,Zone
+sm_zone_weight:title_zone_based_shipping,Zone Based Shipping
+sticker_new,New
+sticker_sale,Sale
+success_account_has_been_created,A customer account has been created that will let you keep track of orders.
+success_changes_saved,Changes saved
+success_copied_d_products,Copied %d products
+success_currency_rates_updated,Currency rates updated
+success_customers_imported,Customers successfully imported.
+success_deleted_d_products,Deleted %d products
+success_duplicated_d_products,Duplicated %d products
+success_d_translations_imported,"Inserted %d new translations, updated %d translations"
+success_logged_in_as_user,You are now logged in as %firstname %lastname.
+success_moved_d_categories,Moved %d categories
+success_moved_d_products,Moved %d products
+success_now_logged_in_as,You are now logged in as %username
+success_password_reset,A new password has been sent to your email address.
+success_post_deleted,Post deleted
+success_product_added_to_cart,Your product was successfully added to the cart.
+success_translated_deleted,Translation was successfully deleted
+success_unmounted_d_categories,Unmounted %d categories
+success_unmounted_d_products,Unmounted %d products
+success_your_customer_account_has_been_created,Your customer account has been created.
+success_your_email_was_sent,Your email has successfully been sent
+terms_cookies_acceptance,"We rely on cookies to provide our services. By using our services, you agree to our use of cookies."
+text_add,Add
+text_added_d_new_translations,Added %d new translations
+text_already_logged_in,You are already logged in
+text_also_set_as_database_default,Also set as database default (when new tables are created)
+text_are_you_sure,Are you sure?
+text_by,by
+text_cheapest_shipping_from_price,Cheapest shipping from %price
+text_default,default
+text_deleted_d_translations,Deleted %d translations
+text_delete_translations_not_present,Delete translations no longer present in files
+text_dock_in_customer_service,Dock in customer service
+text_dock_in_dock_menu,Dock in site menu
+text_dock_in_information,Dock in information
+text_dock_in_menu,Dock in top menu
+text_dock_in_tree,Dock in category tree
+text_found_d_translations,Found %d translations in %d files
+text_html_enabled,HTML enabled
+text_in,in
+text_inlcude_modules,Include modules
+text_insert_before,Insert before
+text_insert_new_categories,Insert new categories
+text_insert_new_entries,Insert new entries
+text_insert_new_products,Insert new products
+text_is_archived,Is archived
+text_is_sale,Is sale
+text_items,item(s)
+text_leave_blank_for_all_languages,Leave blank for all languages
+text_logout,Logout
+text_long_execution_time,We apologize for the inconvenience that the server seems temporary overloaded right now.
+text_make_changes_necessary_to_install,Make any changes necessary to continue installation
+text_move_down,Move down
+text_move_up,Move up
+text_new_customers_click_here,New customers click here
+text_notify_customer,Notify customer
+text_not_enough_products_in_stock,There are not enough products in stock.
+text_not_enough_products_in_stock_for_options,There are not enough products for the selected options.
+text_not_enough_products_option_in_stock,There are not enough products of the selected option in stock.
+text_no_entries_found_in_database,No entries found in database
+text_no_entries_in_database,There are no entries in the database.
+text_no_product_description,There is no description for this product yet.
+text_no_template_settings,There are no settings available for this template.
+text_only_untranslated,Only untranslated
+text_order_status_changed_to_s,Order status changed to %s
+text_overwrite_existing_entries,Overwrite existing entries
+text_product_cannot_be_purchased_until_s,The product cannot be purchased until %s
+text_product_can_no_longer_be_purchased,The product can no longer be purchased
+text_product_is_orderable,Product is orderable
+text_product_not_available_for_purchase,The product is not available for purchase
+text_remove,Remove
+text_remove_image,Remove image
+text_search,Search
+text_search_phrase_or_keyword,Search phrase or keyword
+text_separate_added_cart_items,Separate added cart items
+text_set_by_product,Set by product
+text_shared_by_pages,Shared by %d pages
+text_share_on_s,Share on %s
+text_tax_rate_rule_both_of_the_above,Applies to both of above
+text_tax_rate_rule_companies,Applies to companies
+text_tax_rate_rule_customers_without_tax_id,Applies to customers without a tax ID
+text_tax_rate_rule_customers_with_tax_id,Applies to customers with a tax ID
+text_tax_rate_rule_individuals,Applies to individuals
+text_update,Update
+text_updated_d_translations,Updated %d translations
+text_update_empty_translations,Update empty translations if applicable
+text_user_input,User input
+text_with_selected,With selected
+title_account,Account
+title_active,Active
+title_add,Add
+title_addons,Add-ons
+title_address,Address
+title_address1,Address 1
+title_address2,Address 2
+title_address_format,Address Format
+title_add_combination,Add Combination
+title_add_comment,Add Comment
+title_add_custom_item,Add Custom Item
+title_add_group,Add Group Value
+title_add_new_branch,Add New Branch
+title_add_new_category,Add New Category
+title_add_new_country,Add New Country
+title_add_new_currency,Add New Currency
+title_add_new_customer,Add New Customer
+title_add_new_geo_zone,Add New Geo Zone
+title_add_new_language,Add New Language
+title_add_new_manufacturer,Add New Manufacturer
+title_add_new_product,Add New Product
+title_add_new_quantity_unit,Add New Quantity Unit
+title_add_new_slide,Add New Slide
+title_add_new_store,Add New Store
+title_add_new_supplier,Add New Supplier
+title_add_new_tax_class,Add New Tax Class
+title_add_new_tax_rate,Add New Tax Rate
+title_add_new_unit,Add New Unit
+title_add_product,Add Product
+title_add_to_cart,Add To Cart
+title_add_value,Add Value
+title_admin_panel,Admin Panel
+title_admin_template,Admin Template
+title_aliases,Aliases
+title_all_products,All Products
+title_all_scripts,All Scripts
+title_all_zones,All Zones
+title_alphabetical,Alphabetical
+title_also_purchased_products,Also Purchased Products
+title_amount,Amount
+title_another_option,Another Option
+title_appearence,Appearence
+title_archived,Archived
+title_attributes,Attributes
+title_author,Author
+title_auto,Auto
+title_average_order_amount,Average Order Amount
+title_back,Back
+title_background_jobs,Background Jobs
+title_blocked_until,Blocked Until
+title_calculate,Calculate
+title_campaigns,Campaigns
+title_cancel,Cancel
+title_captcha,CAPTCHA
+title_caption,Caption
+title_cart,Cart
+title_catalog,Catalog
+title_catalog_template,Catalog Template
+title_categories,Categories
+title_change,Change
+title_charset,Charset
+title_checkout,Checkout
+title_city,City
+title_code,Code
+title_collation,Collation
+title_color,Color
+title_columns,Columns
+title_comments,Comments
+title_company,Company
+title_confirm_new_password,Confirm New Password
+title_confirm_order,Confirm Order
+title_confirm_password,Confirm Password
+title_contact,Contact
+title_contact_us,Contact Us
+title_content,Content
+title_convert,Convert
+title_copy,Copy
+title_copy_billing_address,Copy Billing Address
+title_countries,Countries
+title_country,Country
+title_create_account,Create Account
+title_create_new_delivery_status,Create New Delivery Status
+title_create_new_group,Create New Group
+title_create_new_option_group,Create New Option Group
+title_create_new_order,Create New Order
+title_create_new_order_status,Create New Order Status
+title_create_new_page,Create New Page
+title_create_new_pages,Create New Page
+title_create_new_sold_out_status,Create New Sold Out Status
+title_create_new_status,Create New Status
+title_create_new_user,Create New User
+title_csv_file,CSV File
+title_csv_import_export,CSV Import/Export
+title_currencies,Currencies
+title_currency,Currency
+title_currency_code,Currency Code
+title_currency_value,Currency Value
+title_customer,Customer
+title_customers,Customers
+title_customer_details,Customer Details
+title_customer_information,Customer Information
+title_customer_modules,Customer Modules
+title_customer_name,Customer Name
+title_customer_service,Customer Service
+title_customer_type,Customer Type
+title_data,Data
+title_database_manager,Database Manager
+title_database_parse_time,Database Parse Time
+title_database_queries,Database Queries
+title_database_tables,Database Tables
+title_date,Date
+title_date_created,Date Created
+title_date_format,Date Format
+title_date_period,Date Period
+title_date_registered,Date Registered
+title_date_updated,Date Updated
+title_date_valid_from,Date Valid From
+title_date_valid_to,Date Valid To
+title_decimals,Decimals
+title_decimal_point,Decimal Point
+title_default,Default
+title_default_category,Default Category
+title_default_currency,Default Currency
+title_default_language,Default Language
+title_delete,Delete
+title_delimiter,Delimiter
+title_delivery_status,Delivery Status
+title_delivery_statuses,Delivery Statuses
+title_description,Description
+title_desired_password,Desired Password
+title_details,Details
+title_developed_by,Developed by
+title_developer,Developer
+title_different_shipping_address,Different Shipping Address
+title_dimensions,Dimensions
+title_disable,Disable
+title_disabled,Disabled
+title_discussions,Discussions
+title_display_prices,Display Prices
+title_dock,Dock
+title_domestic_name,Domestic Name
+title_download,Download
+title_duplicate,Duplicate
+title_edit,Edit
+title_edit_account,Edit Account
+title_edit_branch,Edit Branch
+title_edit_category,Edit Category
+title_edit_country,Edit Country
+title_edit_currency,Edit Currency
+title_edit_customer,Edit Customer
+title_edit_delivery_status,Edit Delivery Status
+title_edit_geo_zone,Edit Geo Zone
+title_edit_language,Edit Language
+title_edit_manufacturer,Edit Manufacturer
+title_edit_module,Edit Module
+title_edit_option_group,Edit Option Group
+title_edit_order,Edit Order
+title_edit_order_status,Edit Order Status
+title_edit_page,Edit Page
+title_edit_product,Edit Product
+title_edit_product_group,Edit Product Group
+title_edit_quantity_unit,Edit Quantity Unit
+title_edit_slide,Edit Slide
+title_edit_sold_out_status,Edit Sold Out Status
+title_edit_store,Edit Store
+title_edit_supplier,Edit Supplier
+title_edit_tax_class,Edit Tax Class
+title_edit_tax_rate,Edit Tax Rate
+title_edit_translations,Edit Translations
+title_edit_user,Edit User
+title_email,Email
+title_email_address,Email Address
+title_email_message,Email Message
+title_empty,Empty
+title_enable,Enable
+title_enabled,Enabled
+title_enclosure,Enclosure
+title_end_date,End Date
+title_escape_character,Escape Character
+title_example,Example
+title_excluding_tax,Excluding Tax
+title_excl_tax,Excl. Tax
+title_expires,Expires
+title_export,Export
+title_export_to_csv,Export To CSV
+title_external_link,External Link
+title_false,False
+title_file,File
+title_filter,Filter
+title_filter_now,Filter
+title_find,Find
+title_firstname,First Name
+title_fixed_header,Fixed Header
+title_force_currency_code,Force Currency Code
+title_free_shipping,Free Shipping
+title_function,Function
+title_general,General
+title_geo_zone,Geo Zone
+title_geo_zones,Geo Zones
+title_geo_zone_limitation,Geo Zone Limitation
+title_get_address,Get Address
+title_go,Go
+title_google_taxonomy_id,Google Taxonomy ID
+title_grand_total,Grand Total
+title_group,Group
+title_gtin,GTIN
+title_guest,Guest
+title_guests,Guests
+title_h1_title,H1 Title
+title_head_title,Head Title
+title_help,Help
+title_hidden,Hidden
+title_home,Home
+title_icon,Icon
+title_id,ID
+title_image,Image
+title_import,Import
+title_import_from_csv,Import From CSV
+title_import_to_csv,Import From CSV
+title_inactive,Inactive
+title_included_files,Included Files
+title_including_tax,Including Tax
+title_incl_tax,Incl. Tax
+title_information,Information
+title_insert_,Insert
+title_install,Install
+title_install_module,Install Module
+title_in_stock,In Stock
+title_item,Item
+title_item_name,Item Name
+title_job_modules,Job Modules
+title_key,Key
+title_keywords,Keywords
+title_language,Language
+title_languages,Languages
+title_lastname,Last Name
+title_last_host,Last Host
+title_last_ip,Last IP
+title_last_login,Last Login
+title_latest_addons,Latest Add-ons
+title_latest_products,Latest Products
+title_line_ending,Line Ending
+title_link,Link
+title_list_of_subscribers,List of Subscribers
+title_list_style,List Style
+title_login,Login
+title_logotype,Logotype
+title_logout,Logout
+title_lost_password,Lost Password
+title_manufacturer,Manufacturer
+title_manufacturers,Manufacturers
+title_map_image,Map Image
+title_map_link,Map Link
+title_memory_limit,Memory Limit
+title_memory_peak,Memory Peak
+title_message,Message
+title_meta_description,Meta Description
+title_mobile_phone,Mobile Phone
+title_modules,Modules
+title_module_id,Module ID
+title_month,Month
+title_monthly_sales,Monthly Sales
+title_more,More
+title_most_popular,Most Popular
+title_most_recent_forum_topics,Most Recent Forum Topics
+title_most_shopping_customers,Most Shopping Customers
+title_most_sold_products,Most Sold Products
+title_move,Move
+title_name,Name
+title_new,New
+title_newsletter,Newsletter
+title_new_combination,New Combination
+title_new_geo_zone,Create New Geo Zone
+title_new_image,New Image
+title_new_password,New Password
+title_new_product_group,Create New Product Group
+title_next,Next
+title_no,No
+title_nothing_found,Nothing found
+title_notify,Notify
+title_number,Number
+title_number_of_customers,Number of Customers
+title_number_of_products,Number of Products
+title_off,Off
+title_ok,OK
+title_on,On
+title_on_sale,On Sale
+title_option,Option
+title_options,Options
+title_options_stock,Options Stock
+title_option_groups,Option Groups
+title_option_id,Option ID
+title_order,Order
+title_orderable,Orderable
+title_orders,Orders
+title_order_action,Order Action
+title_order_action_modules,Order Action Modules
+title_order_completed,Your order is successfully completed!
+title_order_copy,Order Copy
+title_order_history,Order History
+title_order_id,Order ID
+title_order_information,Order Information
+title_order_items,Order Items
+title_order_status,Order Status
+title_order_statuses,Order Statuses
+title_order_success,Order Success
+title_order_success_modules,Order Success Modules
+title_order_summary,Order Summary
+title_order_total,Order Total
+title_order_total_modules,Order Total Modules
+title_output,Output
+title_packing_slip,Packing Slip
+title_pages,Pages
+title_page_capture_time,Page Capture Time
+title_page_parse_time,Page Parse Time
+title_parent_category,Parent Category
+title_password,Password
+title_payment,Payment
+title_payment_address,Payment Address
+title_payment_due,Payment Due
+title_payment_fees,Payment Fees
+title_payment_information,Payment Information
+title_payment_method,Payment Method
+title_payment_modules,Payment Modules
+title_payment_option,Payment Option
+title_phone,Phone
+title_phones,Phones
+title_phone_country_code,Phone Country Code
+title_popularity,Popularity
+title_postcode,Postcode
+title_postcode_format,Postcode Format
+title_prefix,Prefix
+title_previous,Previous
+title_price,Price
+title_prices,Prices
+title_price_adjust,Price Adjust
+title_price_incl_tax,Price Incl. Tax
+title_price_operator,Price Operator
+title_priority,Priority
+title_product,Product
+title_products,Products
+title_product_groups,Product Groups
+title_product_images,Product Images
+title_purchase_price,Purchase Price
+title_qty,Qty
+title_quantity,Quantity
+title_quantity Unit,Quantity Unit
+title_quantity_units,Quantity Units
+title_range,Range
+title_rate,Rate
+title_raw_date_format,Raw Date Format
+title_raw_time_format,Raw Time Format
+title_recently_viewed,Recently Viewed
+title_redirecting,Redirecting
+title_reference,Reference
+title_regional_settings,Regional Settings
+title_remember_me,Remember Me
+title_remove,Remove
+title_reports,Reports
+title_required,Required
+title_root,Root
+title_rows,Rows
+title_rule,Rule
+title_run_now,Run Now
+title_sales,Sales
+title_save,Save
+title_save_changes,Save Changes
+title_scan,Scan
+title_scan_files,Scan Files
+title_scan_files_for_translations,Scan Files For Translations
+title_screen,Screen
+title_search_results,Search Results
+title_search_results_for_s,Search Results for &quot;%s&quot;
+title_search_translations,Search Translations
+title_select,Select
+title_selected,Selected
+title_send,Send
+title_send_email_order_copy,Send email order copy
+title_settings,Settings
+title_shipping,Shipping
+title_shipping_address,Shipping Address
+title_shipping_fees,Shipping Fees
+title_shipping_information,Shipping Information
+title_shipping_modules,Shipping Modules
+title_shipping_option,Shipping Option
+title_shipping_tracking_id,Shipping Tracking ID
+title_shipping_weight,Shipping Weight
+title_short_description,Short Description
+title_similar_products,Similar Products
+title_sku,SKU
+title_slides,Slides
+title_sold_out,Sold Out
+title_sold_out_status,Sold Out Status
+title_sold_out_statuses,Sold Out Statuses
+title_sort,Sort
+title_start_date,Start Date
+title_statistics,Statistics
+title_status,Status
+title_stock_status,Stock Status
+title_storage_encoding,Storage Encoding
+title_stores,Stores
+title_store_currency,Store Currency
+title_store_hours,Store hours
+title_store_language,Store Language
+title_subject,Subject
+title_subscribe,Subscribe
+title_subtotal,Subtotal
+title_suffix,Suffix
+title_sum,Sum
+title_supplier,Supplier
+title_suppliers,Suppliers
+title_syntax,Syntax
+title_system_locale,System Locale
+title_s_days,%s days
+title_s_months,%s months
+title_taric,TARIC
+title_tax,Tax
+title_tax_class,Tax Class
+title_tax_classes,Tax Classes
+title_tax_classs,Tax Classes
+title_tax_id,Tax ID
+title_tax_id_format,Tax ID Format
+title_tax_rates,Tax Rates
+title_template,Template
+title_template_settings,Template Settings
+title_thousands_sep,Thousands Separator
+title_time_format,Time Format
+title_title,Title
+title_total,Total
+title_total_amount,Total Amount
+title_total_sales,Total Sales
+title_tracking_id,Tracking ID
+title_transaction_id,Transaction ID
+title_transaction_number,Transaction Number
+title_translations,Translations
+title_true,True
+title_type,Type
+title_uncompleted,Uncompleted
+title_uninstall,Uninstall
+title_unit_cost,Unit Cost
+title_unit_price,Unit Price
+title_unmount,Unmount
+title_unprocessed,Unprocessed
+title_update,Update
+title_update_rates,Update Rates
+title_upload,Upload
+title_upload_images,Upload Images
+title_upload_new_vqmod,Upload a New vQmod
+title_username,Username
+title_users,Users
+title_valid_from,Valid From
+title_valid_to,Valid To
+title_value,Value
+title_values,Values
+title_vat_registration_id,VAT Registration ID
+title_version,Version
+title_view_order,View Order
+title_view_printable_order_copy,View printable order copy
+title_vqmods,vQmods
+title_webmail,Webmail
+title_weight,Weight
+title_width_height_length,Width x Height x Length
+title_yes,Yes
+title_zone,Zone
+title_zones,Zones
+title_zone_state_province,Zone/State/Province
+tooltip_price_incl_tax,This field helps you calculate net price based on the store region tax. All prices input to database are always excluding tax.
+warning_admin_folder_not_protected,Warning: Your admin folder is not .htaccess protected
+warning_backup_translations,Warning: Always backup your translations before continuing.
+warning_install_folder_exists,Warning: The installation directory is still available and should be deleted.
+warning_mounting_points_will_be_replaced,Warning: All current mounting points will be replaced.
+warning_must_login_page,You must be logged in to view the page.
+warning_unsaved_changes,"There are unsaved changes, do you wish to continue?"
+warning_your_customer_information_unsaved,Your customer information contains unsaved changes.
