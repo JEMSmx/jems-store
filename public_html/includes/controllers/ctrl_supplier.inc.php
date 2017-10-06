@@ -1,9 +1,10 @@
 <?php
 
   class ctrl_supplier {
-    public $data = array();
+    public $data;
 
     public function __construct($supplier_id=null) {
+
       if (!empty($supplier_id)) {
         $this->load((int)$supplier_id);
       } else {
@@ -19,18 +20,25 @@
         "show fields from ". DB_TABLE_SUPPLIERS .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
     }
 
     public function load($supplier_id) {
-      $suppliers_query = database::query(
+
+      $this->reset();
+
+      $supplier_query = database::query(
         "select * from ". DB_TABLE_SUPPLIERS ."
         where id='". (int)$supplier_id ."'
         limit 1;"
       );
-      $this->data = database::fetch($suppliers_query);
-      if (empty($this->data)) trigger_error('Could not find supplier (ID: '. (int)$supplier_id .') in database.', E_USER_ERROR);
+
+      if ($supplier = database::fetch($supplier_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($supplier, $this->data));
+      } else {
+        trigger_error('Could not find supplier (ID: '. (int)$supplier_id .') in database.', E_USER_ERROR);
+      }
     }
 
     public function save() {
@@ -46,6 +54,7 @@
 
       database::query(
         "update ". DB_TABLE_SUPPLIERS ." set
+        code = '". database::input($this->data['code']) ."',
         name = '". database::input($this->data['name']) ."',
         description = '". database::input($this->data['description'], true) ."',
         email = '". database::input($this->data['email']) ."',
@@ -86,5 +95,3 @@
       cache::clear_cache('suppliers');
     }
   }
-
-?>

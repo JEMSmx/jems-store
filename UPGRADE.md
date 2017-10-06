@@ -27,4 +27,5 @@
   This chapter is no longer provided as it is recommended to always use the automatic upgrade script.
   
   Doing a manual upgrade you must note any changes stated in the upgrade patches. See ~/install/upgrade_patches/*.
+
   

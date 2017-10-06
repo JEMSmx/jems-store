@@ -73,7 +73,6 @@
       'quantity_units' => 'quantity_units.inc.php',
       'edit_quantity_unit' => 'edit_quantity_unit.inc.php',
       'csv' => 'csv.inc.php',
+      'products.json' => 'products.json.inc.php',
     ),
   );
-
-?>

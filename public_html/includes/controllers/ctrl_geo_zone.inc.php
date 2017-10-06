@@ -1,9 +1,10 @@
 <?php
 
   class ctrl_geo_zone {
-    public $data = array();
+    public $data;
 
     public function __construct($geo_zone_id=null) {
+
       if ($geo_zone_id !== null) {
         $this->load((int)$geo_zone_id);
       } else {
@@ -19,18 +20,27 @@
         "show fields from ". DB_TABLE_GEO_ZONES .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
+
+      $this->data['zones'] = array();
     }
 
     public function load($geo_zone_id) {
+
+      $this->reset();
+
       $geo_zone_query = database::query(
         "select * from ". DB_TABLE_GEO_ZONES ."
         where id = '". (int)$geo_zone_id ."'
         limit 1;"
       );
-      $this->data = database::fetch($geo_zone_query);
-      if (empty($this->data)) trigger_error('Could not find geo zone (ID: '. (int)$geo_zone_id .') in database.', E_USER_ERROR);
+
+      if ($geo_zone = database::fetch($geo_zone_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($geo_zone, $this->data));
+      } else {
+        trigger_error('Could not find geo zone (ID: '. (int)$geo_zone_id .') in database.', E_USER_ERROR);
+      }
 
       $zones_to_geo_zones_query = database::query(
         "select z2gz.*, c.name as country_name, z.name as zone_name from ". DB_TABLE_ZONES_TO_GEO_ZONES ." z2gz
@@ -61,6 +71,7 @@
       database::query(
         "update ". DB_TABLE_GEO_ZONES ."
         set
+          code = '". database::input($this->data['code']) ."',
           name = '". database::input($this->data['name']) ."',
           description = '". database::input($this->data['description']) ."',
           date_updated = '". date('Y-m-d H:i:s') ."'
@@ -117,5 +128,3 @@
       $this->data['id'] = null;
     }
   }
-
-?>

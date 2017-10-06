@@ -1,11 +1,24 @@
 <?php
   $template_config = array(
     array(
-      'key' => 'fixed_header',
-      'default_value' => '0',
-      'title' => language::translate('title_fixed_header', 'Fixed Header'),
-      'description' => language::translate('description_fixed_header', 'Fixate the header position making it stick on top while scroll.'),
-      'function' => 'toggle("y/n")',
+      'key' => 'product_modal_window',
+      'default_value' => '1',
+      'title' => language::translate('template:title_product_modal_window', 'Product Modal Window'),
+      'description' => language::translate('template:description_product_modal_window', 'Enables or disables the product modal window.'),
+      'function' => 'toggle("e/d")',
+    ),
+    array(
+      'key' => 'sidebar_parallax_effect',
+      'default_value' => '1',
+      'title' => language::translate('template:title_sidebar_parallax_effect', 'Sidebar Parallax Effect'),
+      'description' => language::translate('template:description_sidebar_parallax_effect', 'Enables or disables the sidebar parallax effect.'),
+      'function' => 'toggle("e/d")',
+    ),
+    array(
+      'key' => 'cookie_acceptance',
+      'default_value' => '1',
+      'title' => language::translate('template:title_cookie_acceptance', 'Cookie Acceptance'),
+      'description' => language::translate('template:description_cookie_acceptance', 'Enables or disables the cookie acceptance notice.'),
+      'function' => 'toggle("e/d")',
     ),
   );
-?>

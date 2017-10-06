@@ -5,7 +5,7 @@ curl -fsSL https://github.com/memiux/cloud/tarball/master | tar --strip 1 -xzC $
 
 # su vagrant -c 'cd /vagrant && composer.phar -vv install'
 
-mysql -u root -p123 -e "CREATE DATABASE IF NOT EXISTS litecart CHARACTER SET utf8 COLLATE utf8_general_ci;"
+mysql -u root -p123 -e "CREATE DATABASE IF NOT EXISTS litecart_demo CHARACTER SET utf8 COLLATE utf8_general_ci;"
 # service mysql restart
 
 # /usr/local/sbin/php-fpm --nodaemonize

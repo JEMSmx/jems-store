@@ -1,49 +1,38 @@
 <div id="box-checkout-shipping" class="box">
   <h2 class="title"><?php echo language::translate('title_shipping', 'Shipping'); ?></h2>
-  <div class="content listing-wrapper">
-    <ul id="shipping-options" class="list-horizontal">
-<?php
-  foreach ($options as $module) {
-    foreach ($module['options'] as $option) {
-?>
-      <li class="option<?php echo (!empty($selected['id']) && $module['id'].':'.$option['id'] == $selected['id']) ? ' selected' : false; ?><?php echo !empty($option['error']) ? ' semi-transparent' : ''; ?>">
-      <?php echo functions::form_draw_form_begin('shipping_form') . functions::form_draw_hidden_field('selected_shipping', $module['id'].':'.$option['id']); ?>
 
-        <div class="icon-wrapper"><img src="<?php echo functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_HTTP_HOME . $option['icon'], 200, 70, 'FIT_ONLY_BIGGER_USE_WHITESPACING'); ?>" alt="" /></div>
+  <div class="options btn-group-vertical">
 
-        <div class="title"><?php echo $module['title']; ?></div>
-
-        <div class="name"><?php echo $option['name']; ?></div>
-
-        <?php if (!empty($option['error'])) { ?>
-        <div class="error"><?php echo $option['error']; ?></div>
-        <?php } else { ?>
-        <div class="description"><?php echo $option['fields'] . $option['description']; ?></div>
-        <?php } ?>
-
-        <div class="footer">
-          <p class="price"><?php if ($option['cost'] != 0) echo '+ ' . currency::format(tax::get_price($option['cost'], $option['tax_class_id'])); ?></p>
-
-          <div class="select">
-<?php
-  if (!empty($selected['id']) && $module['id'].':'.$option['id'] == $selected['id']) {
-    if (!empty($option['fields'])) {
-      echo functions::form_draw_button('set_shipping', language::translate('title_update', 'Update'), 'submit', !empty($option['error']) ? 'disabled="disabled"' : '');
-    } else {
-      echo functions::form_draw_button('set_shipping', language::translate('title_selected', 'Selected'), 'submit', 'class="active"' . (!empty($option['error']) ?  'disabled="disabled"' : ''));
-    }
-  } else {
-    echo functions::form_draw_button('set_shipping', language::translate('title_select', 'Select'), 'submit', !empty($option['error']) ? 'disabled="disabled"' : '');
-  }
-?>
-          </div>
+    <?php foreach ($options as $module) foreach ($module['options'] as $option) { ?>
+    <label class="option btn btn-default btn-block<?php echo ($module['id'].':'.$option['id'] == $selected['id']) ? ' active' : ''; ?><?php echo !empty($option['error']) ? ' disabled' : ''; ?>">
+      <?php echo functions::form_draw_radio_button('shipping[option_id]', $module['id'].':'.$option['id'], $selected['id'], 'style="display: none;"' . (!empty($option['error']) ? ' disabled="disabled"' : '')); ?>
+      <div class="header row" style="margin: 0;">
+        <div class="col-sm-fourths thumbnail" style="margin: 0;">
+          <img src="<?php echo functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_HTTP_HOME . $option['icon'], 140, 60, 'FIT_ONLY_BIGGER_USE_WHITESPACING'); ?>" />
         </div>
-      <?php echo functions::form_draw_form_end(); ?>
-      </li>
-<?php
-    }
-  }
-?>
-    </ul>
+        <div class="col-sm-5 text-left">
+          <h4 class="title" style="margin: 0.5em 0 0 0;"><?php echo $module['title']; ?></h4>
+          <div class="name"><?php echo $option['name']; ?></div>
+        </div>
+        <div class="col-sm-thirds text-right">
+          <div class="price"><?php echo (empty($option['error']) && $option['cost'] != 0) ? '+ ' . currency::format(tax::get_price($option['cost'], $option['tax_class_id'])) : language::translate('text_no_fee', 'No fee'); ?></div>
+        </div>
+      </div>
+
+      <?php if (empty($option['error']) && (!empty($option['description']) || !empty($option['fields']))) { ?>
+      <div class="content">
+        <hr />
+        <?php if (!empty($option['description'])) { ?><p class="description text-left"><?php echo $option['description']; ?></p><?php } ?>
+        <?php if (!empty($option['fields'])) { ?><div class="fields text-left"><?php echo $option['fields']; ?></div><?php } ?>
+      </div>
+      <?php } ?>
+    </label>
+    <?php } ?>
+
   </div>
 </div>
+
+<script>
+  $('#box-checkout-shipping .option.active :input').prop('disabled', false);
+  $('#box-checkout-shipping .option:not(.active) :input').prop('disabled', true);
+</script>

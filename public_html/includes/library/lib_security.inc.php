@@ -2,9 +2,10 @@
 
   class security {
 
+    private static $_bad_urls;
     private static $_blacklist;
     private static $_whitelist;
-    private static $_ban_time = '7 days';
+    private static $_ban_time = '12 hours';
     private static $_trigger;
 
     public static function construct() {
@@ -12,6 +13,7 @@
       if (!file_exists(FS_DIR_HTTP_ROOT . WS_DIR_DATA . 'blacklist.txt')) file_put_contents(FS_DIR_HTTP_ROOT . WS_DIR_DATA . 'blacklist.txt', '');
       if (!file_exists(FS_DIR_HTTP_ROOT . WS_DIR_DATA . 'whitelist.txt')) file_put_contents(FS_DIR_HTTP_ROOT . WS_DIR_DATA . 'whitelist.txt', '');
 
+      self::$_bad_urls = FS_DIR_HTTP_ROOT . WS_DIR_DATA . 'bad_urls.txt';
       self::$_blacklist = FS_DIR_HTTP_ROOT . WS_DIR_DATA . 'blacklist.txt';
       self::$_whitelist = FS_DIR_HTTP_ROOT . WS_DIR_DATA . 'whitelist.txt';
     }
@@ -52,6 +54,13 @@
             . '</body>' . PHP_EOL
             . '</html>' . PHP_EOL
           );
+        }
+      }
+
+    // Check if client is accessing a blacklisted URL
+      if (settings::get('security_bad_urls')) {
+        if (self::is_accessing_bad_url()) {
+          self::ban('Bad URL');
         }
       }
 
@@ -101,11 +110,11 @@
       if (settings::get('security_http_post')) {
         if (!empty($_POST) && (!defined('REQUIRE_POST_TOKEN') || REQUIRE_POST_TOKEN) && (!isset(route::$route['post_security']) || route::$route['post_security'])) {
           if (!isset($_POST['token']) || $_POST['token'] != form::session_post_token()) {
-            error_log('Warning: Blocked a potential form hacking attempt (CSRF) by '. $_SERVER['REMOTE_ADDR'] .' ['. (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '') .'] requesting '. $_SERVER['REQUEST_URI'] .'.');
+            error_log('Warning: Blocked a forbidden form data submission as an invalid HTTP POST token was submitted by '. $_SERVER['REMOTE_ADDR'] .' ['. (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '') .'] requesting '. $_SERVER['REQUEST_URI'] .'.');
             session::clear();
             sleep(3);
             http_response_code(400);
-            die('HTTP POST Error: The form submit token was issued for another session identity. Your request has therefore not been processed. Please try again.');
+            die('HTTP POST Error: The form submit token is either invalid or issued for another session identity. Your request has therefore not been processed. Please try again.');
           }
         }
       }
@@ -124,7 +133,7 @@
     // Bad Bot Trap - Rig the trap
       if (settings::get('security_bot_trap')) {
         if (document::$layout == 'default') {
-          $GLOBALS['content'] = '<a rel="nofollow" href="'. document::link(WS_DIR_HTTP_HOME, array(self::$_trigger['key'] => '')) .'" style="display: inline-block; position: absolute;"><img src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="" style="width: 1px; height: 1px; border: none;" /></a>' . PHP_EOL
+          $GLOBALS['content'] = '<a rel="nofollow" href="'. document::link(WS_DIR_HTTP_HOME, array(self::$_trigger['key'] => '')) .'" style="display: none;"><img src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="" style="width: 1px; height: 1px; border: none;" /></a>' . PHP_EOL
                                . $GLOBALS['content'];
         }
       }
@@ -221,6 +230,13 @@
       return false;
     }
 
+    public static function is_accessing_bad_url() {
+      $bad_urls = file_get_contents(self::$_bad_urls);
+      $bad_urls = preg_replace('#\R+#', "\n", $bad_urls);
+
+      return preg_match('#^/'. preg_quote(route::$request, '#') .'$#m', $bad_urls);
+    }
+
     public static function ban($reason='', $time='') {
 
       if (self::is_blacklisted()) return;
@@ -231,12 +247,14 @@
 
       error_log('A bad client with a suspected bad behaviour was banned for '. $time .'.' . PHP_EOL
               . (!empty($reason) ? "  Reason: $reason" . PHP_EOL : '')
+              . '  URI: '. $_SERVER['REQUEST_URI'] . PHP_EOL
               . '  Address: '. $_SERVER['REMOTE_ADDR'] .' ('. $hostname .')' . PHP_EOL
               . '  Agent: '. $_SERVER['HTTP_USER_AGENT']
               . '  Date: '. date('r')
               , 0);
 
       $row = $_SERVER['REQUEST_METHOD'] .' '. $_SERVER['REQUEST_URI'] .' '. $_SERVER['SERVER_PROTOCOL'] .' '
+           . '[reason="'. htmlspecialchars($reason) .'"]'
            . '[date="'. date('Y-m-d H:i:s') .'"]'
            . '[ip="' . $_SERVER['REMOTE_ADDR'] .'"]'
            . '[hostname="'. $hostname .'"]'
@@ -253,5 +271,3 @@
       exit;
     }
   }
-
-?>

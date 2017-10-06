@@ -1,9 +1,10 @@
 <?php
 
   class ctrl_language {
-    public $data = array();
+    public $data;
 
     public function __construct($language_code=null) {
+
       if ($language_code !== null) {
         $this->load($language_code);
       } else {
@@ -19,25 +20,33 @@
         "show fields from ". DB_TABLE_LANGUAGES .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
     }
 
     public function load($language_code) {
+
+      $this->reset();
+
+      if (!preg_match('#[a-z]{2}#', $language_code)) trigger_error('Invalid language code ('. $language_code .')', E_USER_ERROR);
+
       $language_query = database::query(
         "select * from ". DB_TABLE_LANGUAGES ."
         where code='". database::input($language_code) ."'
         limit 1;"
       );
-      $this->data = database::fetch($language_query);
-      if (empty($this->data)) trigger_error('Could not find language (Code: '. htmlspecialchars($language_code) .') in database.', E_USER_ERROR);
+
+      if ($language = database::fetch($language_query)) {
+        $this->data = array_intersect_key(array_merge($this->data, $language), $this->data);
+      } else {
+        trigger_error('Could not find language (Code: '. htmlspecialchars($language_code) .') in database.', E_USER_ERROR);
+      }
     }
 
     public function save() {
 
       if (empty($this->data['status']) && $this->data['code'] == settings::get('default_language_code')) {
         trigger_error('You cannot disable the default language.', E_USER_ERROR);
-        return;
       }
 
       if (!empty($this->data['id'])) {
@@ -70,6 +79,7 @@
               DB_TABLE_PRODUCT_GROUPS_VALUES_INFO,
               DB_TABLE_PRODUCTS_INFO,
               DB_TABLE_QUANTITY_UNITS_INFO,
+              DB_TABLE_SLIDES_INFO,
               DB_TABLE_SOLD_OUT_STATUSES_INFO,
             );
 
@@ -182,6 +192,7 @@
         DB_TABLE_PRODUCT_GROUPS_VALUES_INFO,
         DB_TABLE_PRODUCTS_INFO,
         DB_TABLE_QUANTITY_UNITS_INFO,
+        DB_TABLE_SLIDES_INFO,
         DB_TABLE_SOLD_OUT_STATUSES_INFO,
       );
       foreach ($info_tables as $table) {
@@ -196,5 +207,3 @@
       $this->data['id'] = null;
     }
   }
-
-?>

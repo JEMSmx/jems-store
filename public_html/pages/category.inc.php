@@ -6,7 +6,7 @@
     exit;
   }
 
-  $category = catalog::category($_GET['category_id']);
+  $category = reference::category($_GET['category_id']);
 
   if (empty($category->id)) {
     notices::add('errors', language::translate('error_410_gone', 'The requested file is no longer available'));
@@ -23,30 +23,30 @@
   }
 
   document::$snippets['head_tags']['canonical'] = '<link rel="canonical" href="'. document::href_ilink('category', array('category_id' => $category->id), false) .'" />';
-  document::$snippets['title'][] = $category->head_title[language::$selected['code']] ? $category->head_title[language::$selected['code']] : $category->name[language::$selected['code']];
-  document::$snippets['description'] = $category->meta_description[language::$selected['code']] ? $category->meta_description[language::$selected['code']] : strip_tags($category->short_description[language::$selected['code']]);
+  document::$snippets['title'][] = $category->head_title ? $category->head_title : $category->name;
+  document::$snippets['description'] = $category->meta_description ? $category->meta_description : strip_tags($category->short_description);
 
   breadcrumbs::add(language::translate('title_categories', 'Categories'), document::ilink('categories'));
   foreach (array_slice(functions::catalog_category_trail($category->id), 0, -1, true) as $category_id => $category_name) {
     breadcrumbs::add($category_name, document::ilink('category', array('category_id' => $category_id)));
   }
-  breadcrumbs::add($category->name[language::$selected['code']]);
+  breadcrumbs::add($category->name);
 
-  functions::draw_fancybox("a.fancybox[data-fancybox-group='product-listing']");
+  functions::draw_lightbox();
 
   $box_category_cache_id = cache::cache_id('box_category', array('basename', 'get', 'language', 'currency', 'account', 'prices'));
   if (cache::capture($box_category_cache_id, 'file', ($_GET['sort'] == 'popularity') ? 0 : 3600)) {
 
-    $page = new view();
+    $_page = new view();
 
-    $page->snippets = array(
+    $_page->snippets = array(
       'id' => $category->id,
-      'name' => $category->name[language::$selected['code']],
-      'short_description' => $category->short_description[language::$selected['code']],
-      'description' => $category->description[language::$selected['code']],
-      'h1_title' => $category->h1_title[language::$selected['code']] ? $category->h1_title[language::$selected['code']] : $category->name[language::$selected['code']],
-      'head_title' => $category->head_title[language::$selected['code']] ? $category->head_title[language::$selected['code']] : $category->name[language::$selected['code']],
-      'meta_description' => $category->meta_description[language::$selected['code']] ? $category->meta_description[language::$selected['code']] : $category->short_description[language::$selected['code']],
+      'name' => $category->name,
+      'short_description' => $category->short_description,
+      'description' => $category->description,
+      'h1_title' => $category->h1_title ? $category->h1_title : $category->name,
+      'head_title' => $category->head_title ? $category->head_title : $category->name,
+      'meta_description' => $category->meta_description ? $category->meta_description : $category->short_description,
       'image' => functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $category->image, 1024, 0, 'FIT_ONLY_BIGGER'),
       'subcategories' => array(),
       'products' => array(),
@@ -62,7 +62,7 @@
     $subcategories_query = functions::catalog_categories_query($category->id);
     if (database::num_rows($subcategories_query)) {
       while ($subcategory = database::fetch($subcategories_query)) {
-        $page->snippets['subcategories'][] = $subcategory;
+        $_page->snippets['subcategories'][] = $subcategory;
       }
     }
 
@@ -83,6 +83,7 @@
         'manufacturers' => !empty($_GET['manufacturers']) ? $_GET['manufacturers'] : null,
         'product_groups' => !empty($_GET['product_groups']) ? $_GET['product_groups'] : null,
         'sort' => $_GET['sort'],
+        'campaigns_first' => true,
       )
     );
 
@@ -94,25 +95,23 @@
         switch($category->list_style) {
           case 'rows':
             $listing_product['listing_type'] = 'row';
-            $page->snippets['products'][] = $listing_product;
+            $_page->snippets['products'][] = $listing_product;
             break;
           default:
           case 'columns':
             $listing_product['listing_type'] = 'column';
-            $page->snippets['products'][] = $listing_product;
+            $_page->snippets['products'][] = $listing_product;
             break;
         }
         if (++$page_items == $items_per_page) break;
       }
     }
 
-    $page->snippets['num_products_page'] = count($page->snippets['products']);
-    $page->snippets['num_products_total'] = (int)database::num_rows($products_query);
-    $page->snippets['pagination'] = functions::draw_pagination(ceil(database::num_rows($products_query)/$items_per_page));
+    $_page->snippets['num_products_page'] = count($_page->snippets['products']);
+    $_page->snippets['num_products_total'] = (int)database::num_rows($products_query);
+    $_page->snippets['pagination'] = functions::draw_pagination(ceil(database::num_rows($products_query)/$items_per_page));
 
-    echo $page->stitch('views/box_category');
+    echo $_page->stitch('pages/category');
 
     cache::end_capture($box_category_cache_id);
   }
-
-?>

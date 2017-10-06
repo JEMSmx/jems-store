@@ -50,22 +50,11 @@
 
     public static function after_capture() {
 
-    // Set regional data
+    // Load regional settings screen
       if (!preg_match('#^('. preg_quote(WS_DIR_ADMIN, '#') .')#', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))) {
         if (settings::get('regional_settings_screen_enabled')) {
           if (empty(customer::$data['id']) && empty(session::$data['skip_regional_settings_screen']) && empty($_COOKIE['skip_regional_settings_screen'])) {
-
-            functions::draw_fancybox('', array(
-              'centerOnScroll' => true,
-              'hideOnContentClick' => true,
-              'href' => document::ilink('regional_settings', array('redirect' => $_SERVER['REQUEST_URI'])),
-              //'modal' => true,
-              'speedIn' => 600,
-              'transitionIn' => 'fade',
-              'transitionOut' => 'fade',
-              'type' => 'ajax',
-              'scrolling' => 'false',
-            ));
+            functions::draw_lightbox(document::ilink('regional_settings', array('redirect' => $_SERVER['REQUEST_URI'])));
           }
         }
       }
@@ -110,7 +99,7 @@
 
     // Set country from URI
       if (!empty($_GET['country'])) {
-        if (isset($countries[$_GET['country']])) self::$data['country_code'] = $_GET['country'];
+        if (in_array($_GET['country'], $countries)) self::$data['country_code'] = $_GET['country'];
       }
 
     // Set country from cookie
@@ -127,18 +116,12 @@
         }
       }
 
-    
-
     // Get country from HTTP header (CloudFlare)
       if (empty(self::$data['country_code'])) {
         if (!empty($_SERVER['HTTP_CF_IPCOUNTRY']) && in_array($_SERVER['HTTP_CF_IPCOUNTRY'], $countries)) {
           self::$data['country_code'] = $_SERVER['HTTP_CF_IPCOUNTRY'];
         }
       }
-
-      // Set country from GeoIP
-      $geoip = @json_decode(file_get_contents('http://ipinfo.io/' . $_SERVER['REMOTE_ADDR'], false, stream_context_create(array('http' => array('timeout' => 1)))), true);
-      if (isset($geoip['country']) && empty(self::$data['country_code'])) self::$data['country_code'] = $geoip['country'];
 
     // Get country from TLD
       if (empty(self::$data['country_code'])) {
@@ -187,7 +170,7 @@
       }
 
     // Unset zone if not in country
-      if (!functions::reference_verify_zone_code(self::$data['country_code'], self::$data['zone_code'])) {
+      if (!isset(reference::country(self::$data['country_code'])->zones[self::$data['zone_code']])) {
         self::$data['zone_code'] = '';
       }
 
@@ -203,7 +186,7 @@
       }
 
     // Unset zone if not in country
-      if (!functions::reference_verify_zone_code(self::$data['shipping_address']['country_code'], self::$data['shipping_address']['zone_code'])) {
+      if (!isset(reference::country(self::$data['shipping_address']['country_code'])->zones[self::$data['shipping_address']['zone_code']])) {
         self::$data['shipping_address']['zone_code'] = '';
       }
 
@@ -227,13 +210,12 @@
       );
       while ($field = database::fetch($fields_query)) {
         if (preg_match('#^shipping_(.*)$#', $field['Field'], $matches)) {
-          session::$data['customer']['shipping_address'][$matches[1]] = '';
+          session::$data['customer']['shipping_address'][$matches[1]] = null;
         } else {
           session::$data['customer'][$field['Field']] = null;
         }
       }
 
-      session::$data['customer']['different_shipping_address'] = false;
       session::$data['customer']['display_prices_including_tax'] = null;
     }
 
@@ -249,7 +231,7 @@
       if (!empty(self::$data['id'])) return true;
     }
 
-    public static function password_reset($email) {
+    public static function password_reset($email, $new_password=null) {
 
       if (empty($email)) {
         notices::add('errors', language::translate('error_password_reset_missing_email', 'To reset your password you must provide an email address.'));
@@ -269,16 +251,17 @@
         return;
       }
 
-      $new_password = functions::password_generate(6);
+      if (empty($new_password)) $new_password = functions::password_generate(6);
 
-      $customer_query = database::query(
+      database::query(
         "update ". DB_TABLE_CUSTOMERS ."
         set password = '". functions::password_checksum($email, $new_password) ."'
         where email = '". database::input($email) ."'
         limit 1;"
       );
 
-      $message = strtr(language::translate('email_body_password_reset', "We have set a new password for your account at %store_link. Use your email %email and new password %password to log in."), array(
+      $message = language::translate('email_body_password_reset', 'We have set a new password for your account at %store_link. Use your email %email and new password %password to log in.');
+      $message = strtr($message, array(
         '%email' => $email,
         '%password' => $new_password,
         '%store_link' => document::ilink(''),
@@ -298,6 +281,8 @@
 
     public static function load($customer_id) {
 
+      self::reset();
+
       $customer_query = database::query(
         "select * from ". DB_TABLE_CUSTOMERS ."
         where id = '". (int)$customer_id ."'
@@ -305,29 +290,17 @@
       );
       $customer = database::fetch($customer_query);
 
-      session::$data['customer'] = $customer;
-
-      $key_map = array(
-        'shipping_company' => 'company',
-        'shipping_firstname' => 'firstname',
-        'shipping_lastname' => 'lastname',
-        'shipping_address1' => 'address1',
-        'shipping_address2' => 'address2',
-        'shipping_postcode' => 'postcode',
-        'shipping_city' => 'city',
-        'shipping_country_code' => 'country_code',
-        'shipping_zone_code' => 'zone_code',
-      );
+      foreach ($customer as $field => $value) {
+        if (preg_match('#^shipping_(.*)$#', $field, $matches)) {
+          session::$data['customer']['shipping_address'][$matches[1]] = $value;
+        } else {
+          session::$data['customer'][$field] = $value;
+        }
+      }
 
       if (!empty(self::$data['different_shipping_address'])) {
-        foreach ($key_map as $skey => $tkey){
-        self::$data['shipping_address'][$tkey] = self::$data[$skey];
-        unset(self::$data[$skey]);
-        }
-      } else {
-        foreach ($key_map as $skey => $tkey){
-          self::$data['shipping_address'][$tkey] = self::$data[$tkey];
-          unset(self::$data[$skey]);
+        foreach (array_keys(self::$data['shipping_address']) as $key) {
+          self::$data['shipping_address'][$key] = self::$data[$key];
         }
       }
     }
@@ -410,5 +383,3 @@
       exit;
     }
   }
-
-?>

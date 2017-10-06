@@ -1,9 +1,10 @@
 <?php
 
   class ctrl_user {
-    public $data = array();
+    public $data;
 
     public function __construct($user_id=null) {
+
       if ($user_id !== null) {
         $this->load((int)$user_id);
       } else {
@@ -19,7 +20,7 @@
         "show fields from ". DB_TABLE_USERS .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
     }
 
@@ -32,17 +33,14 @@
         where id = '". (int)$user_id ."'
         limit 1;"
       );
-      $this->data = database::fetch($user_query);
 
-      if (empty($this->data)) trigger_error('Could not find user (ID: '. (int)$user_id .') in database.', E_USER_ERROR);
-
-      foreach(file(FS_DIR_HTTP_ROOT . WS_DIR_ADMIN . '.htpasswd') as $row) {
-        $row = explode(':', trim($row));
-        if ($this->data['username'] == $row[0]) {
-          $user->data['htpasswd'] = true;
-          break;
-        }
+      if ($user = database::fetch($user_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($user, $this->data));
+      } else {
+        trigger_error('Could not find user (ID: '. (int)$user_id .') in database.', E_USER_ERROR);
       }
+
+      $this->data['permissions'] = @json_decode($this->data['permissions'], true);
     }
 
     public function save() {
@@ -84,7 +82,7 @@
         set
           status = '". (empty($this->data['status']) ? 0 : 1) ."',
           username = '". database::input($this->data['username']) ."',
-          type = 'admin',
+          permissions = '". database::input(json_encode($this->data['permissions'])) ."',
           date_blocked = '". database::input($this->data['date_blocked']) ."',
           date_expires = '". database::input($this->data['date_expires']) ."',
           date_updated = '". date('Y-m-d H:i:s') ."'
@@ -140,5 +138,3 @@
       cache::clear_cache('users');
     }
   }
-
-?>

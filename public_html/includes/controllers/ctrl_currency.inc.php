@@ -1,9 +1,10 @@
 <?php
 
   class ctrl_currency {
-    public $data = array();
+    public $data;
 
     public function __construct($currency_code=null) {
+
       if ($currency_code !== null) {
         $this->load($currency_code);
       } else {
@@ -19,18 +20,27 @@
         "show fields from ". DB_TABLE_CURRENCIES .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
     }
 
     public function load($currency_code) {
+
+      $this->reset();
+
+      if (!preg_match('#[A-Z]{3}#', $currency_code)) trigger_error('Invalid currency code ('. $currency_code .')', E_USER_ERROR);
+
       $currency_query = database::query(
         "select * from ". DB_TABLE_CURRENCIES ."
         where code='". database::input($currency_code) ."'
         limit 1;"
       );
-      $this->data = database::fetch($currency_query);
-      if (empty($this->data)) trigger_error('Could not find currency (Code: '. htmlspecialchars($currency_code) .') in database.', E_USER_ERROR);
+
+      if ($currency = database::fetch($currency_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($currency, $this->data));
+      } else {
+        trigger_error('Could not find currency (Code: '. htmlspecialchars($currency_code) .') in database.', E_USER_ERROR);
+      }
     }
 
     public function save() {
@@ -169,5 +179,3 @@
       $this->data['id'] = null;
     }
   }
-
-?>

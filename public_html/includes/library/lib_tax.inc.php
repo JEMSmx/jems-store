@@ -32,22 +32,6 @@
 
     ######################################################################
 
-    public static function calculate($value, $tax_class_id, $calculate=null, $country_code=null, $zone_code=null) {
-      trigger_error('The method calculate() is deprecated, use instead get_price()', E_USER_DEPRECATED);
-
-      $customer = array(
-        'country_code' => $country_code,
-        'zone_code' => $zone_code,
-        'different_shipping_address' => false,
-        'shipping_address' => array(
-          'country_code' => $country_code,
-          'zone_code' => $zone_code,
-        ),
-      );
-
-      return self::get_price($value, $tax_class_id, $calculate, $customer);
-    }
-
     public static function get_price($value, $tax_class_id, $calculate_tax=null, $customer=null) {
       if ($calculate_tax === null) $calculate_tax = !empty(customer::$data['display_prices_including_tax']) ? true : false;
 
@@ -64,17 +48,17 @@
 
       if ($tax_class_id == 0) return 0;
 
-      $tax = 0;
-
       $tax_rates = self::get_rates($tax_class_id, $customer);
 
+      $tax = 0;
       foreach ($tax_rates as $tax_rate) {
         switch($tax_rate['type']) {
           case 'fixed':
             $tax += $tax_rate['rate'];
             break;
           case 'percent':
-            $tax += ($value / 100 * $tax_rate['rate']);
+            $val = $value / 100 * $tax_rate['rate'];
+            $tax += $value / 100 * $tax_rate['rate'];
             break;
         }
       }
@@ -173,7 +157,6 @@
       );
 
       while ($rate = database::fetch($tax_rates_query)) {
-
         switch($rate['address_type']) {
           case 'payment':
             if ($rate['customer_type'] == 'individuals' && !empty($customer['company'])) continue 2;
@@ -231,5 +214,3 @@
       return false;
     }
   }
-
-?>

@@ -15,9 +15,9 @@
 
   	function rewrite($parsed_link, $language_code) {
 
-      if (!isset($parsed_link['query']['product_id'])) return false;
+      if (!isset($parsed_link['query']['product_id'])) return;
 
-      $product = catalog::product($parsed_link['query']['product_id']);
+      $product = reference::product($parsed_link['query']['product_id'], $language_code);
 
       if (!$product->id) return $parsed_link;
 
@@ -28,17 +28,17 @@
       }
 
       if (!empty($parsed_link['query']['category_id']) && !empty($product->default_category_id)) {
-        $category_trail = functions::catalog_category_trail($parsed_link['query']['category_id']);
+        $category_trail = functions::catalog_category_trail($parsed_link['query']['category_id'], $language_code);
 
         if (!empty($category_trail)) {
           foreach ($category_trail as $category_id => $category_name) $parsed_link['path'] .= functions::general_path_friendly($category_name, $language_code) .'-c-'. $category_id .'/';
         }
 
       } else if (!empty($product->manufacturer)) {
-        $parsed_link['path'] = functions::general_path_friendly($product->manufacturer['name'], $language_code) .'-m-'. $product->manufacturer['id'] .'/';
+        $parsed_link['path'] = functions::general_path_friendly($product->manufacturer->name, $language_code) .'-m-'. $product->manufacturer->id .'/';
       }
 
-      $parsed_link['path'] .= functions::general_path_friendly($product->name[$language_code], $language_code) .'-p-'. $product->id;
+      $parsed_link['path'] .= functions::general_path_friendly($product->name, $language_code) .'-p-'. $product->id;
 
       unset($parsed_link['query']['category_id']);
       unset($parsed_link['query']['product_id']);
@@ -46,5 +46,3 @@
       return $parsed_link;
     }
   }
-
-?>

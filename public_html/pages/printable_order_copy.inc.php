@@ -9,7 +9,7 @@
     exit;
   }
 
-  $order = new ctrl_order('load', $_GET['order_id']);
+  $order = new ctrl_order($_GET['order_id']);
 
   document::$snippets['title'][] = language::translate('title_order', 'Order') .' #'. (int)$order->data['id'];
 
@@ -19,4 +19,3 @@
   }
 
   echo $order->draw_printable_copy();
-?>

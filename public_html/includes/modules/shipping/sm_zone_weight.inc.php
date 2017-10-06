@@ -36,7 +36,7 @@
         $options[] = array(
           'id' => 'zone_'.$i,
           'icon' => $this->settings['icon'],
-          'name' => !empty($name) ? $name : functions::reference_get_country_name($customer['shipping_address']['country_code']),
+          'name' => !empty($name) ? $name : reference::country($customer['shipping_address']['country_code'])->name,
           'description' => weight::format($total_weight, $this->settings['weight_class']),
           'fields' => '',
           'cost' => $cost,
@@ -54,7 +54,7 @@
           $options[] = array(
             'id' => 'zone_x',
             'icon' => $this->settings['icon'],
-            'name' => !empty($name) ? $name : functions::reference_get_country_name($customer['shipping_address']['country_code']),
+            'name' => !empty($name) ? $name : reference::country($customer['shipping_address']['country_code'])->name,
             'description' => weight::format($total_weight, $this->settings['weight_class']),
             'fields' => '',
             'cost' => $cost + $this->settings['handling_fee'],
@@ -77,40 +77,47 @@
 
       if (empty($rate_table)) return 0;
 
+      $cost = 0;
+
       switch ($this->settings['method']) {
 
         case '<':
-          foreach (array_reverse(preg_split('#(\||;)#', $rate_table)) as $rate) {
+        case '&lt;':
+          foreach (array_reverse(preg_split('#[\|;]#', $rate_table)) as $rate) {
             list($rate_weight, $rate_cost) = explode(':', $rate);
-            if (!isset($cost) || $shipping_weight < $rate_weight) {
+            if ($shipping_weight < $rate_weight) {
               $cost = $rate_cost;
             }
           }
           break;
 
         case '<=':
-          foreach (array_reverse(preg_split('#(\||;)#', $rate_table)) as $rate) {
+        case '&lt;=':
+          foreach (array_reverse(preg_split('#[\|;]#', $rate_table)) as $rate) {
             list($rate_weight, $rate_cost) = explode(':', $rate);
-            if (!isset($cost) || $shipping_weight <= $rate_weight) {
+            if ($shipping_weight <= $rate_weight) {
               $cost = $rate_cost;
             }
           }
           break;
 
         case '>':
-          foreach (preg_split('#(\||;)#', $rate_table) as $rate) {
+        case '&gt;':
+
+          foreach (preg_split('#[\|;]#', $rate_table) as $rate) {
             list($rate_weight, $rate_cost) = explode(':', $rate);
-            if (!isset($cost) || $shipping_weight > $rate_weight) {
+            if ($shipping_weight > $rate_weight) {
               $cost = $rate_cost;
             }
           }
           break;
 
         case '>=':
+        case '&gt;=':
         default:
-          foreach (preg_split('#(\||;)#', $rate_table) as $rate) {
+          foreach (preg_split('#[\|;]#', $rate_table) as $rate) {
             list($rate_weight, $rate_cost) = explode(':', $rate);
-            if (!isset($cost) || $shipping_weight >= $rate_weight) {
+            if ($shipping_weight >= $rate_weight) {
               $cost = $rate_cost;
             }
           }
@@ -200,8 +207,8 @@
           'key' => 'method',
           'default_value' => '>=',
           'title' => language::translate(__CLASS__.':title_method', 'Method'),
-          'description' => language::translate(__CLASS__.':description_method', 'The calculation method that should to be used for the rate tables where a condition is met for shipping weight.'),
-          'function' => 'select("<","<=",">",">=")',
+          'description' => language::translate(__CLASS__.':description_method', 'The calculation method that should to be used for the rate tables where a condition is met for shipping weight. E.g. weight < table'),
+          'function' => 'select("&lt;","&lt;=","&gt;","&gt;=")',
         ),
         array(
           'key' => 'handling_fee',
@@ -231,5 +238,3 @@
 
     public function uninstall() {}
   }
-
-?>

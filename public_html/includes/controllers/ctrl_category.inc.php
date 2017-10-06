@@ -1,7 +1,7 @@
 <?php
 
   class ctrl_category {
-    public $data = array();
+    public $data;
 
     public function __construct($category_id=null) {
 
@@ -20,7 +20,7 @@
         "show fields from ". DB_TABLE_CATEGORIES .";"
       );
       while ($field = database::fetch($categories_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
 
       $categories_info_query = database::query(
@@ -29,6 +29,7 @@
 
       while ($field = database::fetch($categories_info_query)) {
         if (in_array($field['Field'], array('id', 'category_id', 'language_code'))) continue;
+
         $this->data[$field['Field']] = array();
         foreach (array_keys(language::$languages) as $language_code) {
           $this->data[$field['Field']][$language_code] = null;
@@ -47,15 +48,21 @@
         where id='". (int)$category_id ."'
         limit 1;"
       );
-      $this->data = database::fetch($categories_query);
-      if (empty($this->data)) trigger_error('Could not find category (ID: '. (int)$category_id .') in database.', E_USER_ERROR);
+
+      if ($category = database::fetch($categories_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($category, $this->data));
+      } else {
+        trigger_error('Could not find category (ID: '. (int)$category_id .') in database.', E_USER_ERROR);
+      }
 
       $categories_info_query = database::query(
-        "select name, short_description, description, head_title, h1_title, meta_description, language_code from ". DB_TABLE_CATEGORIES_INFO ."
+        "select * from ". DB_TABLE_CATEGORIES_INFO ."
         where category_id = '". (int)$category_id ."';"
       );
+
       while ($category_info = database::fetch($categories_info_query)) {
         foreach ($category_info as $key => $value) {
+          if (in_array($key, array('id', 'category_id', 'language_code'))) continue;
           $this->data[$key][$category_info['language_code']] = $value;
         }
       }
@@ -75,6 +82,11 @@
       }
 
       if ($this->data['parent_id'] == $this->data['id']) $this->data['parent_id'] = null;
+
+      $this->data['keywords'] = explode(',', $this->data['keywords']);
+      $this->data['keywords'] = array_map('trim', $this->data['keywords']);
+      $this->data['keywords'] = array_unique($this->data['keywords']);
+      $this->data['keywords'] = implode(',', $this->data['keywords']);
 
       database::query(
         "update ". DB_TABLE_CATEGORIES ."
@@ -190,7 +202,6 @@
 
       $image = new ctrl_image($file);
 
-    // 456-12345_Fancy-title.jpg
       $filename = 'categories/' . $this->data['id'] .'-'. functions::general_path_friendly($this->data['name'][settings::get('store_language_code')], settings::get('store_language_code')) .'.'. $image->type();
 
       if (is_file(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $this->data['image'])) unlink(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $this->data['image']);
@@ -230,5 +241,3 @@
       $this->data['image'] = '';
     }
   }
-
-?>

@@ -2,93 +2,97 @@
 
   class ctrl_product {
     public $data;
-    
+
     public function __construct($product_id=null) {
+
       if (!empty($product_id)) {
         $this->load((int)$product_id);
       } else {
         $this->reset();
       }
     }
-    
+
     public function reset() {
-      
+
       $this->data = array();
-      
+
       $fields_query = database::query(
         "show fields from ". DB_TABLE_PRODUCTS .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
-      
+
       $info_fields_query = database::query(
         "show fields from ". DB_TABLE_PRODUCTS_INFO .";"
       );
-      
+
       while ($field = database::fetch($info_fields_query)) {
         if (in_array($field['Field'], array('id', 'product_id', 'language_code'))) continue;
+
         $this->data[$field['Field']] = array();
         foreach (array_keys(language::$languages) as $language_code) {
-          $this->data[$field['Field']][$language_code] = '';
+          $this->data[$field['Field']][$language_code] = null;
         }
       }
-      
+
       $this->data['categories'] = array();
       $this->data['product_groups'] = array();
       $this->data['images'] = array();
-      $this->data['videos'] = array();
       $this->data['prices'] = array();
       $this->data['campaigns'] = array();
       $this->data['options'] = array();
       $this->data['options_stock'] = array();
     }
-    
+
     public function load($product_id) {
-      
+
       $this->reset();
-      
-      if (empty($product_id)) return false;
-      
+
     // Product
       $products_query = database::query(
         "select * from ". DB_TABLE_PRODUCTS ."
         where id = '". (int)$product_id ."'
         limit 1;"
       );
-      $product = database::fetch($products_query);
-      if (empty($product)) trigger_error('Could not find product (ID: '. (int)$product_id .') in database.', E_USER_ERROR);
-      
+
+      if ($product = database::fetch($products_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($product, $this->data));
+      } else {
+        trigger_error('Could not find product (ID: '. (int)$product_id .') in database.', E_USER_ERROR);
+      }
+
       foreach ($product as $key => $value) {
         $this->data[$key] = $value;
       }
-      
+
     // Categories
       $this->data['categories'] = array();
-      
+
       $categories_query = database::query(
         "select category_id from ". DB_TABLE_PRODUCTS_TO_CATEGORIES ."
          where product_id = '". (int)$product_id ."';"
       );
-      
+
       while ($category = database::fetch($categories_query)){
         $this->data['categories'][] = $category['category_id'];
       }
-      
+
       $this->data['product_groups'] = explode(',', $this->data['product_groups']);
-      
+
     // Info
       $products_info_query = database::query(
         "select * from ". DB_TABLE_PRODUCTS_INFO ."
          where product_id = '". (int)$product_id ."';"
       );
+
       while ($product_info = database::fetch($products_info_query)) {
         foreach ($product_info as $key => $value) {
           if (in_array($key, array('id', 'product_id', 'language_code'))) continue;
           $this->data[$key][$product_info['language_code']] = $value;
         }
       }
-      
+
     // Prices
       $products_prices_query = database::query(
         "select * from ". DB_TABLE_PRODUCTS_PRICES ."
@@ -99,7 +103,7 @@
           $this->data['prices'][$currency_code] = $product_price[$currency_code];
         }
       }
-      
+
     // Campaigns
       $product_campaigns_query = database::query(
         "select * from ". DB_TABLE_PRODUCTS_CAMPAIGNS ."
@@ -110,25 +114,6 @@
         $this->data['campaigns'][$product_campaign['id']] = $product_campaign;
       }
 
-    // Showcases
-      $product_showcases_query = database::query(
-        "select * from ". DB_TABLE_K_PRODUCTS_SHOWCASES_ROW ."
-        where product_id = '". (int)$this->data['id'] ."'
-        order by priority;"
-      );
-      while ($product_showcase = database::fetch($product_showcases_query)) {
-        $this->data['showcases'][$product_showcase['id']] = $product_showcase;
-        $this->data['showcases'][$product_showcase['id']]['showcase_columns']=array();
-          $product_showcases_column_query = database::query(
-            "select * from ". DB_TABLE_K_PRODUCTS_SHOWCASES_COLUMN ."
-            where showcase_row_id = '". (int)$product_showcase['id'] ."'
-            order by priority;"
-          );
-        while ($product_showcase_column = database::fetch($product_showcases_column_query)) {
-        $this->data['showcases'][$product_showcase['id']]['showcase_columns'][$product_showcase_column['id']] = $product_showcase_column;
-        }
-      }
-      
     // Options
       $products_options_query = database::query(
         "select * from ". DB_TABLE_PRODUCTS_OPTIONS ."
@@ -138,7 +123,7 @@
       while($option = database::fetch($products_options_query)) {
         $this->data['options'][$option['id']] = $option;
       }
-      
+
     // Options stock
       $products_options_stock_query = database::query(
         "select * from ". DB_TABLE_PRODUCTS_OPTIONS_STOCK ." po
@@ -146,13 +131,13 @@
         order by priority;"
       );
       while($option_stock = database::fetch($products_options_stock_query)) {
-      
+
         $this->data['options_stock'][$option_stock['id']] = $option_stock;
         $this->data['options_stock'][$option_stock['id']]['name'] = array();
-        
+
         foreach (explode(',', $option_stock['combination']) as $combination) {
           list($group_id, $value_id) = explode('-', $combination);
-          
+
           $options_values_query = database::query(
             "select ovi.value_id, ovi.name, ovi.language_code from ". DB_TABLE_OPTION_VALUES_INFO ." ovi
             where ovi.value_id = '". (int)$value_id ."';"
@@ -167,7 +152,7 @@
           }
         }
       }
-      
+
     // Images
       $products_images_query = database::query(
         "select * from ". DB_TABLE_PRODUCTS_IMAGES."
@@ -177,20 +162,10 @@
       while($image = database::fetch($products_images_query)) {
         $this->data['images'][$image['id']] = $image;
       }
-
-     // Videos
-      $products_videos_query = database::query(
-        "select * from ". DB_TABLE_PRODUCTS_VIDEOS."
-        where product_id = '". (int)$this->data['id'] ."'
-        order by priority asc, id asc;"
-      );
-      while($video = database::fetch($products_videos_query)) {
-        $this->data['videos'][$video['id']] = $video;
-      }
     }
-    
+
     public function save() {
-    
+
       if (empty($this->data['id'])) {
         database::query(
           "insert into ". DB_TABLE_PRODUCTS ."
@@ -199,7 +174,7 @@
         );
         $this->data['id'] = database::insert_id();
       }
-      
+
     // Calculate product quantity from options
       if (!empty($this->data['options_stock'])) {
         $this->data['quantity'] = 0;
@@ -207,7 +182,7 @@
           $this->data['quantity'] += @$option['quantity'];
         }
       }
-      
+
     // Cleanup empty elements in categories
       if (!empty($this->data['categories'])) {
         foreach(array_keys($this->data['categories']) as $key){
@@ -215,11 +190,16 @@
         }
         $this->data['categories'] = array_unique($this->data['categories']);
       }
-      
+
       if (empty($this->data['default_category_id']) || !in_array($this->data['default_category_id'], $this->data['categories'])) {
         $this->data['default_category_id'] = reset($this->data['categories']);
       }
-      
+
+      $this->data['keywords'] = explode(',', $this->data['keywords']);
+      $this->data['keywords'] = array_map('trim', $this->data['keywords']);
+      $this->data['keywords'] = array_unique($this->data['keywords']);
+      $this->data['keywords'] = implode(',', $this->data['keywords']);
+
       database::query(
         "update ". DB_TABLE_PRODUCTS ." set
         status = ". (int)$this->data['status'] .",
@@ -229,7 +209,7 @@
         sold_out_status_id = ". (int)$this->data['sold_out_status_id'] .",
         default_category_id = ". (int)$this->data['default_category_id'].",
         product_groups = '". database::input(implode(',', $this->data['product_groups'])) ."',
-        keywords = '". database::input(rtrim(trim($this->data['keywords']), ',')) ."',
+        keywords = '". database::input($this->data['keywords']) ."',
         quantity = ". (float)$this->data['quantity'] .",
         quantity_unit_id = ". (int)$this->data['quantity_unit_id'] .",
         purchase_price = ". (float)$this->data['purchase_price'] .",
@@ -237,7 +217,6 @@
         tax_class_id = '". database::input($this->data['tax_class_id']) ."',
         code = '". database::input($this->data['code']) ."',
         sku = '". database::input($this->data['sku']) ."',
-        link = '". database::input($this->data['link']) ."',
         gtin = '". database::input($this->data['gtin']) ."',
         taric = '". database::input($this->data['taric']) ."',
         dim_x = ". (float)$this->data['dim_x'] .",
@@ -252,7 +231,7 @@
         where id = ". (int)$this->data['id'] ."
         limit 1;"
       );
-      
+
       database::query(
         "delete from ". DB_TABLE_PRODUCTS_TO_CATEGORIES ."
          where product_id = '". (int)$this->data['id'] ."';"
@@ -273,7 +252,7 @@
           limit 1;"
         );
         $product_info = database::fetch($products_info_query);
-        
+
         if (empty($product_info)) {
           database::query(
             "insert into ". DB_TABLE_PRODUCTS_INFO ."
@@ -281,11 +260,11 @@
             values ('". (int)$this->data['id'] ."', '". $language_code ."');"
           );
         }
-        
+
         database::query(
           "update ". DB_TABLE_PRODUCTS_INFO ." set
           name = '". database::input($this->data['name'][$language_code]) ."',
-          short_description = '". @database::input($this->data['short_description'][$language_code]) ."',
+          short_description = '". database::input($this->data['short_description'][$language_code]) ."',
           description = '". database::input($this->data['description'][$language_code], true) ."',
           head_title = '". database::input($this->data['head_title'][$language_code]) ."',
           meta_description = '". database::input($this->data['meta_description'][$language_code]) ."',
@@ -295,16 +274,16 @@
           limit 1;"
         );
       }
-      
+
       foreach (array_keys(currency::$currencies) as $currency_code) {
-        
+
         $products_prices_query = database::query(
           "select * from ". DB_TABLE_PRODUCTS_PRICES ."
           where product_id = '". (int)$this->data['id'] ."'
           limit 1;"
         );
         $product_price = database::fetch($products_prices_query);
-        
+
         if (empty($product_price)) {
           database::query(
             "insert into ". DB_TABLE_PRODUCTS_PRICES ."
@@ -312,13 +291,13 @@
             values ('". (int)$this->data['id'] ."');"
           );
         }
-        
+
         $sql_currency_prices = "";
         foreach (array_keys(currency::$currencies) as $currency_code) {
           $sql_currency_prices .= $currency_code ." = '". (!empty($this->data['prices'][$currency_code]) ? (float)$this->data['prices'][$currency_code] : 0) ."', ";
         }
         $sql_currency_prices = rtrim($sql_currency_prices, ', ');
-        
+
         database::query(
           "update ". DB_TABLE_PRODUCTS_PRICES ." set
           $sql_currency_prices
@@ -326,14 +305,14 @@
           limit 1;"
         );
       }
-      
+
     // Delete campaigns
       database::query(
         "delete from ". DB_TABLE_PRODUCTS_CAMPAIGNS ."
         where product_id = '". (int)$this->data['id'] ."'
         and id not in ('". @implode("', '", array_column($this->data['campaigns'], 'id')) ."');"
       );
-      
+
     // Update campaigns
       if (!empty($this->data['campaigns'])) {
         foreach (array_keys($this->data['campaigns']) as $key) {
@@ -345,13 +324,13 @@
             );
             $this->data['campaigns'][$key]['id'] = database::insert_id();
           }
-          
+
           $sql_currency_campaigns = "";
           foreach (array_keys(currency::$currencies) as $currency_code) {
             $sql_currency_campaigns .= $currency_code ." = '". (float)$this->data['campaigns'][$key][$currency_code] ."', ";
           }
           $sql_currency_campaigns = rtrim($sql_currency_campaigns, ', ');
-          
+
           database::query(
             "update ". DB_TABLE_PRODUCTS_CAMPAIGNS ." set
             start_date = ". (empty($this->data['campaigns'][$key]['start_date']) ? "NULL" : "'". date('Y-m-d H:i:s', strtotime($this->data['campaigns'][$key]['start_date'])) ."'") .",
@@ -364,85 +343,19 @@
         }
       }
 
-      // Delete showcases
-      database::query(
-        "delete from ". DB_TABLE_K_PRODUCTS_SHOWCASES_ROW ."
-        where product_id = '". (int)$this->data['id'] ."'
-        and id not in ('". @implode("', '", array_column($this->data['showcases'], 'id')) ."');"
-      );
-      
-    // Update showcases
-      if (!empty($this->data['showcases'])) {
-        $showcase_priority = 1;
-        foreach (array_keys($this->data['showcases']) as $key) {
-
-         
-          if (empty($this->data['showcases'][$key]['id'])) {
-            database::query(
-              "insert into ". DB_TABLE_K_PRODUCTS_SHOWCASES_ROW ."
-              (product_id)
-              values ('". (int)$this->data['id'] ."');"
-            );
-            $this->data['showcases'][$key]['id'] = database::insert_id();
-          }
-   
-          database::query(
-            "update ". DB_TABLE_K_PRODUCTS_SHOWCASES_ROW ." set
-            priority = '". $showcase_priority++ ."'
-            where product_id = '". (int)$this->data['id'] ."'
-            and id = '". (int)$this->data['showcases'][$key]['id'] ."'
-            limit 1;"
-          );
-
-          $showcase_column_priority=1;
-            if(!empty($this->data['showcases'][$key]['showcase_columns'])){
-              foreach (array_keys($this->data['showcases'][$key]['showcase_columns']) as $column_key) {
-
-                   // Delete showcases_column
-                      database::query(
-                        "delete from ". DB_TABLE_K_PRODUCTS_SHOWCASES_COLUMN ."
-                        where showcase_row_id = '". (int)$this->data['showcases'][$key]['id'] ."'
-                        and id not in ('". @implode("', '", array_column($this->data['showcases'][$key]['showcase_columns'], 'id')) ."');"
-                      );
-
-                  if (empty($this->data['showcases'][$key]['showcase_columns'][$column_key]['id'])) {
-                    database::query(
-                      "insert into ". DB_TABLE_K_PRODUCTS_SHOWCASES_COLUMN ."
-                      (showcase_row_id)
-                      values ('". (int)$this->data['showcases'][$key]['id'] ."');"
-                    );
-                    $this->data['showcases'][$key]['showcase_columns'][$column_key]['id'] = database::insert_id();
-                  }
-           
-                  database::query(
-                    "update ". DB_TABLE_K_PRODUCTS_SHOWCASES_COLUMN ." set
-                    priority = '". $showcase_column_priority++ ."',
-                    title= '". $this->data['showcases'][$key]['showcase_columns'][$column_key]['title'] ."',
-                    subtitle= '". $this->data['showcases'][$key]['showcase_columns'][$column_key]['subtitle']."',
-                    align_text= '". $this->data['showcases'][$key]['showcase_columns'][$column_key]['align_text']."',
-                    background_color= '". $this->data['showcases'][$key]['showcase_columns'][$column_key]['background_color'] ."'
-                    where showcase_row_id = '". (int)$this->data['showcases'][$key]['id'] ."'
-                    and id = '". $this->data['showcases'][$key]['showcase_columns'][$column_key]['id'] ."'
-                    limit 1;"
-                  );
-              }
-            }
-          }
-      }
-      
     // Delete options
       database::query(
         "delete from ". DB_TABLE_PRODUCTS_OPTIONS ."
         where product_id = '". (int)$this->data['id'] ."'
         and id not in ('". @implode("', '", array_column($this->data['options'], 'id')) ."');"
       );
-      
+
     // Update options
       if (!empty($this->data['options'])) {
         $i = 0;
         foreach (array_keys($this->data['options']) as $key) {
           $i++;
-          
+
           if (empty($this->data['options'][$key]['id'])) {
             database::query(
               "insert into ". DB_TABLE_PRODUCTS_OPTIONS ."
@@ -451,12 +364,12 @@
             );
             $this->data['options'][$key]['id'] = database::insert_id();
           }
-          
+
           $sql_currency_options = "";
           foreach (array_keys(currency::$currencies) as $currency_code) {
             $sql_currency_options .= $currency_code ." = '". (isset($this->data['options'][$key][$currency_code]) ? (float)$this->data['options'][$key][$currency_code] : 0) ."', ";
           }
-          
+
           database::query(
             "update ". DB_TABLE_PRODUCTS_OPTIONS ."
             set group_id = '". database::input($this->data['options'][$key]['group_id']) ."',
@@ -471,14 +384,14 @@
           );
         }
       }
-      
+
     // Delete stock options
       database::query(
         "delete from ". DB_TABLE_PRODUCTS_OPTIONS_STOCK ."
         where product_id = '". (int)$this->data['id'] ."'
         and id not in ('". @implode("', '", array_column($this->data['options_stock'], 'id')) ."');"
       );
-      
+
     // Update stock options
       if (!empty($this->data['options_stock'])) {
         $i = 0;
@@ -491,7 +404,7 @@
             );
             $this->data['options_stock'][$key]['id'] = database::insert_id();
           }
-          
+
         // Ascending option combination
           $combinations = explode(',', $this->data['options_stock'][$key]['combination']);
           if (!function_exists('custom_sort_combinations')) {
@@ -506,9 +419,9 @@
           }
           usort($combinations, 'custom_sort_combinations');
           $this->data['options_stock'][$key]['combination'] = implode(',', $combinations);
-          
+
           database::query(
-            "update ". DB_TABLE_PRODUCTS_OPTIONS_STOCK ." 
+            "update ". DB_TABLE_PRODUCTS_OPTIONS_STOCK ."
             set combination = '". database::input($this->data['options_stock'][$key]['combination']) ."',
             sku = '". database::input($this->data['options_stock'][$key]['sku']) ."',
             weight = '". database::input($this->data['options_stock'][$key]['weight']) ."',
@@ -526,7 +439,7 @@
           );
         }
       }
-      
+
     // Delete images
       $products_images_query = database::query(
         "select * from ". DB_TABLE_PRODUCTS_IMAGES."
@@ -543,7 +456,7 @@
           limit 1;"
         );
       }
-      
+
     // Update images
       if (!empty($this->data['images'])) {
         $image_priority = 1;
@@ -556,14 +469,14 @@
             );
             $this->data['images'][$key]['id'] = database::insert_id();
           }
-          
+
           if (!empty($this->data['images'][$key]['new_filename']) && !is_file(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $this->data['images'][$key]['new_filename'])) {
             functions::image_delete_cache(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $this->data['images'][$key]['filename']);
             functions::image_delete_cache(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $this->data['images'][$key]['new_filename']);
             rename(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $this->data['images'][$key]['filename'], FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $this->data['images'][$key]['new_filename']);
             $this->data['images'][$key]['filename'] = $this->data['images'][$key]['new_filename'];
           }
-          
+
           database::query(
             "update ". DB_TABLE_PRODUCTS_IMAGES ."
             set filename = '". database::input($this->data['images'][$key]['filename']) ."',
@@ -574,7 +487,7 @@
           );
         }
       }
-      
+
     // Update product image
       if (!empty($this->data['images'])){
         $images = array_values($this->data['images']);
@@ -583,7 +496,7 @@
       } else {
         $this->data['image'];
       }
-      
+
       database::query(
         "update ". DB_TABLE_PRODUCTS ." set
         image = '". database::input($this->data['image']) ."'
@@ -591,87 +504,26 @@
         limit 1;"
       );
 
-    
-      // Delete videos
-      $products_videos_query = database::query(
-        "select * from ". DB_TABLE_PRODUCTS_VIDEOS."
-        where product_id = '". (int)$this->data['id'] ."'
-        and id not in ('". @implode("', '", array_column($this->data['videos'], 'id')) ."');"
-      );
-      while ($product_video = database::fetch($products_videos_query)) {
-        database::query(
-          "delete from ". DB_TABLE_PRODUCTS_VIDEOS ."
-          where product_id = '". (int)$this->data['id'] ."'
-          and id = '". (int)$product_video['id'] ."'
-          limit 1;"
-        );
-      }
-      
-    // Update videos
-      if (!empty($this->data['videos'])) {
-        $video_priority = 1;
-        foreach (array_keys($this->data['videos']) as $key) {
-          if (empty($this->data['videos'][$key]['id'])) {
-            database::query(
-              "insert into ". DB_TABLE_PRODUCTS_VIDEOS ."
-              (product_id)
-              values ('". (int)$this->data['id'] ."');"
-            );
-            $this->data['videos'][$key]['id'] = database::insert_id();
-          }
-          
-          if (!empty($this->data['videos'][$key]['new_link'])) {
-            $this->data['videos'][$key]['link'] = $this->data['videos'][$key]['new_link'];
-          }
-          
-          database::query(
-            "update ". DB_TABLE_PRODUCTS_VIDEOS ."
-            set link = '". database::input($this->data['videos'][$key]['link']) ."',
-                priority = '". $video_priority++ ."'
-            where product_id = '". (int)$this->data['id'] ."'
-            and id = '". (int)$this->data['videos'][$key]['id'] ."'
-            limit 1;"
-          );
-        }
-      }
-      
-    // Update product video
-      if (!empty($this->data['videos'])){
-        $videos = array_values($this->data['videos']);
-        $video = array_shift($videos);
-        $this->data['link'] = $video['link'];
-      } else {
-        $this->data['link'];
-      }
-      
-      database::query(
-        "update ". DB_TABLE_PRODUCTS ." set
-        link = '". database::input($this->data['link']) ."'
-        where id='". (int)$this->data['id'] ."'
-        limit 1;"
-      );
-      
       cache::clear_cache('product_'.$this->data['id']);
       cache::clear_cache('products');
     }
-    
+
     public function delete() {
-    
+
       if (empty($this->data['id'])) return;
-    
+
       $this->data['images'] = array();
       $this->data['campaigns'] = array();
-      $this->data['showcases'] = array();
       $this->data['options'] = array();
       $this->data['options_stock'] = array();
       $this->save();
-      
+
       database::query(
         "delete from ". DB_TABLE_PRODUCTS ."
         where id = '". (int)$this->data['id'] ."'
         limit 1;"
       );
-      
+
       database::query(
         "delete from ". DB_TABLE_PRODUCTS_INFO ."
         where product_id = '". (int)$this->data['id'] ."';"
@@ -690,75 +542,53 @@
         where product_id = '". (int)$this->data['id'] ."';"
       );
 
-      database::query(
-        "delete from ". DB_TABLE_PRODUCTS_SHOWCASES_ROW ."
-        where product_id = '". (int)$this->data['id'] ."';"
-      );
-      
 
       cache::clear_cache('products');
-      
+
       $this->data['id'] = null;
     }
-    
-    public function delete_image($file_id){
-      $products_images_query = database::query(
-        "select * from ". DB_TABLE_K_PRODUCTS_SHOWCASES_COLUMN."
-        where id = '". (int)$file_id ."';"
-      );
-      
-      $product_image = database::fetch($products_images_query);
 
-      if (is_file(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $product_image['image'])) unlink(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $product_image['image']);
-        functions::image_delete_cache(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $product_image['image']);
-        database::query(
-          "delete from ".  DB_TABLE_K_PRODUCTS_SHOWCASES_COLUMN ."
-          where id = '". (int)$file_id ."'
-          limit 1;"
-        );
-    }
     public function add_image($file, $filename='') {
 
-      
       if (empty($file)) return;
-      
+
       $checksum = md5_file($file);
       if (in_array($checksum, array_column($this->data['images'], 'checksum'))) return false;
-      
+
       if (!empty($filename)) $filename = 'products/' . $filename;
-      
+
       if (empty($this->data['id'])) {
         $this->save();
       }
-      
+
       if (!is_dir(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . 'products/')) mkdir(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . 'products/', 0777);
-      
+
       if (!$image = new ctrl_image($file)) return false;
-      
+
     // 456-Fancy-product-title-N.jpg
       $i=1;
       while (empty($filename) || is_file(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $filename)) {
         $filename = 'products/' . $this->data['id'] .'-'. functions::general_path_friendly($this->data['name'][settings::get('store_language_code')], settings::get('store_language_code')) .'-'. $i++ .'.'. $image->type();
       }
-      
+
       $priority = count($this->data['images'])+1;
-      
+
       if (settings::get('image_downsample_size')) {
         list($width, $height) = explode(',', settings::get('image_downsample_size'));
         $image->resample($width, $height, 'FIT_ONLY_BIGGER');
       }
-      
+
       if (!$image->write(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $filename, '', 90)) return false;
-      
+
       functions::image_delete_cache(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $filename);
-      
+
       database::query(
         "insert into ". DB_TABLE_PRODUCTS_IMAGES ."
         (product_id, filename, checksum, priority)
         values ('". (int)$this->data['id'] ."', '". database::input($filename) ."', '". database::input($checksum) ."', '". (int)$priority ."');"
       );
       $image_id = database::insert_id();
-      
+
       $this->data['images'][$image_id] = array(
         'id' => $image_id,
         'filename' => $filename,
@@ -766,74 +596,4 @@
         'priority' => $priority,
       );
     }
-
-    public function add_image_showcase_row($file, $id_showcase, $id_showcase_row, $filename='') {
-
-      
-      if (empty($file)) return;
-      
-      $checksum = md5_file($file);     
-      
-      if (!empty($filename)) $filename = 'img-showcase/' . $filename;
-      
-      if (empty($this->data['id'])) {
-        $this->save();
-      }
-      
-      if (!is_dir(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . 'img-showcase/')) mkdir(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . 'img-showcase/', 0777);
-      
-      if (!$image = new ctrl_image($file)) return false;
-      
-    // 456-Fancy-product-title-N.jpg
-      $i=1;
-      while (empty($filename) || is_file(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $filename)) {
-        $filename = 'img-showcase/' . $id_showcase .'-'.$id_showcase_row .'-'. functions::general_path_friendly($this->data['name'][settings::get('store_language_code')], settings::get('store_language_code')) .'-'. $i++ .'.'. $image->type();
-      }
-      
-      $priority = 1;
-      
-      if (settings::get('image_downsample_size')) {
-        list($width, $height) = explode(',', settings::get('image_downsample_size'));
-        $image->resample($width, $height, 'FIT_ONLY_BIGGER');
-      }
-      
-      if (!$image->write(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $filename, '', 90)) return false;
-      
-      functions::image_delete_cache(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $filename);
-      
-      database::query(
-            "update ". DB_TABLE_K_PRODUCTS_SHOWCASES_COLUMN."
-            set image = '". database::input($filename) ."'
-            where showcase_row_id = '". $id_showcase ."'
-            and id = '". $id_showcase_row ."'
-            limit 1;"
-          );
-      
-    }
-
-    public function add_video($link) {
-      
-     if (empty($this->data['id'])) {
-        $this->save();
-      }
-          
-      $priority = count($this->data['videos'])+1;
-      
-      database::query(
-        "insert into ". DB_TABLE_PRODUCTS_VIDEOS ."
-        (product_id, link, priority)
-        values ('". (int)$this->data['id'] ."', '". database::input($link) ."', '". (int)$priority ."');"
-      );
-      $video_id = database::insert_id();
-      
-      $this->data['videos'][$video_id] = array(
-        'id' => $video_id,
-        'link' => $link,
-        'priority' => $priority,
-      );
-    }
-
-
   }
-
-?>

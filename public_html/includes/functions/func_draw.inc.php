@@ -1,18 +1,27 @@
 <?php
 
-  function draw_fontawesome_icon($name, $params=null, $class=null) {
-    trigger_error('draw_fontawesome_icon() is deprecated. Use instead draw_fonticon()', E_USER_DEPRECATED);
-    return functions::draw_fonticon('fa-'.$name . ($class ? ' ' . $class : null), $params);
-  }
-
   function draw_fonticon($class, $params=null) {
 
     switch(true) {
       case (substr($class, 0, 3) == 'fa '):
+        //document::$snippets['head_tags']['fontawesome'] = '<link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css" />'; // Uncomment if removed from lib_document
         return '<i class="'. $class .'"'. (!empty($params) ? ' ' . $params : null) .'></i>';
 
       case (substr($class, 0, 3) == 'fa-'):
+        //document::$snippets['head_tags']['fontawesome'] = '<link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css" />'; // Uncomment if removed from lib_document
         return '<i class="fa '. $class .'"'. (!empty($params) ? ' ' . $params : null) .'></i>';
+
+      case (substr($class, 0, 3) == 'fi-'):
+        document::$snippets['head_tags']['foundation-icons'] = '<link rel="stylesheet" href="//cdn.jsdelivr.net/foundation-icons/latest/foundation-icons.min.css" />';
+        return '<i class="'. $class .'"'. (!empty($params) ? ' ' . $params : null) .'></i>';
+
+      case (substr($class, 0, 10) == 'glyphicon-'):
+        //document::$snippets['head_tags']['ionicons'] = '<link rel="stylesheet" href="'/path/to/glyphicon.css" />'; // As of Bootstrap 3 - Not embedded in release
+        return '<span class="glyphicon '. $class .'"'. (!empty($params) ? ' ' . $params : null) .'></span>';
+
+      case (substr($class, 0, 4) == 'ion-'):
+        document::$snippets['head_tags']['ionicons'] = '<link rel="stylesheet" href="//cdn.jsdelivr.net/ionicons/latest/css/ionicons.min.css" />';
+        return '<i class="'. $class .'"'. (!empty($params) ? ' ' . $params : null) .'></i>';
 
       default:
         trigger_error('Unknown font icon ('. $class .')', E_USER_WARNING);
@@ -32,8 +41,8 @@
       'link' => document::ilink('category', array('category_id' => $category['id'])),
       'image' => array(
         'original' => WS_DIR_IMAGES . $category['image'],
-        'thumbnail' => functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $category['image'], $width, $height, 'CROP'),
-        'thumbnail_2x' => functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $category['image'], $width*2, $height*2, 'CROP'),
+        'thumbnail' => functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $category['image'], $width, $height, settings::get('category_image_clipping')),
+        'thumbnail_2x' => functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $category['image'], $width*2, $height*2, settings::get('category_image_clipping')),
         'viewport' => array(
           'width' => $width,
           'height' => $height,
@@ -50,13 +59,13 @@
     $listing_product = new view();
 
     $sticker = '';
-    if ($product['campaign_price']) {
+    if ((float)$product['campaign_price']) {
       $sticker = '<div class="sticker sale" title="'. language::translate('title_on_sale', 'On Sale') .'">'. language::translate('sticker_sale', 'Sale') .'</div>';
     } else if ($product['date_created'] > date('Y-m-d', strtotime('-'.settings::get('new_products_max_age')))) {
       $sticker = '<div class="sticker new" title="'. language::translate('title_new', 'New') .'">'. language::translate('sticker_new', 'New') .'</div>';
     }
 
-    list($width, $height) = functions::image_scale_by_width(160, settings::get('product_image_ratio'));
+    list($width, $height) = functions::image_scale_by_width(320, settings::get('product_image_ratio'));
 
     $listing_product->snippets = array(
       'listing_type' => $listing_type,
@@ -66,53 +75,58 @@
       'link' => document::ilink('product', array('product_id' => $product['id']), array('category_id')),
       'image' => array(
         'original' => $product['image'] ? WS_DIR_IMAGES . $product['image'] : '',
-        'thumbnail' => functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $product['image'], $width, $height, settings::get('product_image_clipping')),
-        'thumbnail_2x' => functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $product['image'], $width*2, $height*2, settings::get('product_image_clipping')),
+        'thumbnail' => functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $product['image'], $width, $height, settings::get('product_image_clipping'), settings::get('product_image_trim')),
+        'thumbnail_2x' => functions::image_thumbnail(FS_DIR_HTTP_ROOT . WS_DIR_IMAGES . $product['image'], $width*2, $height*2, settings::get('product_image_clipping'), settings::get('product_image_trim')),
         'viewport' => array(
           'width' => $width,
           'height' => $height,
         ),
       ),
       'sticker' => $sticker,
-      'manufacturer_name' => $product['manufacturer_name'],
+      'manufacturer' => array(),
       'short_description' => $product['short_description'],
       'quantity' => $product['quantity'],
-      'options' => array(),
       'price' => currency::format(tax::get_price($product['price'], $product['tax_class_id'])),
-      'campaign_price' => $product['campaign_price'] ? currency::format(tax::get_price($product['campaign_price'], $product['tax_class_id'])) : null,
+      'campaign_price' => (float)$product['campaign_price'] ? currency::format(tax::get_price($product['campaign_price'], $product['tax_class_id'])) : null,
     );
+
+    if (!empty($product['manufacturer_id'])) {
+      $listing_product->snippets['manufacturer'] = array(
+        'id' => $product['manufacturer_id'],
+        'name' => $product['manufacturer_name'],
+      );
+    }
 
   // Watermark Original Image
     if (settings::get('product_image_watermark')) {
       $listing_product->snippets['image']['original'] = functions::image_process(FS_DIR_HTTP_ROOT . $listing_product->snippets['image']['original'], array('watermark' => true));
     }
 
-    $products_options_query = database::query(
-            "select id from ". DB_TABLE_PRODUCTS_OPTIONS ."
-            where product_id = '".$product['id']."'
-            order by priority;"
-    );
-
-     $listing_product->snippets['options'] = array();
-     while ($product_option = database::fetch($products_options_query)) {
-        $listing_product->snippets['options'][] = $product_option;
-     }
-
-
     return $listing_product->stitch('views/listing_product');
   }
 
   function draw_fancybox($selector='a.fancybox', $params=array()) {
+    trigger_error('draw_fancybox() is deprecated. Use instead draw_lightbox()', E_USER_DEPRECATED);
+    return functions::draw_lightbox($selector, $params);
+  }
+
+  function draw_lightbox($selector='*[data-toggle="lightbox"]', $params=array()) {
+
+    $selector = str_replace("'", '"', $selector);
+
+    document::$snippets['head_tags']['featherlight'] = '<link rel="stylesheet" href="'. WS_DIR_EXT .'featherlight/featherlight.min.css" />';
+    document::$snippets['foot_tags']['featherlight'] = '<script src="'. WS_DIR_EXT .'featherlight/featherlight.min.js"></script>';
+
+    if (preg_match('#^(https?:)?//#', $selector)) {
+      document::$snippets['javascript']['featherlight-'.$selector] = '  $.featherlight(\''. $selector .'\', {' . PHP_EOL;
+    } else {
+      document::$snippets['javascript']['featherlight-'.$selector] = '  $(\''. $selector .'\').featherlight({' . PHP_EOL;
+    }
 
     $default_params = array(
-      'hideOnContentClick' => true,
-      'padding'            => 20,
-      'showCloseButton'    => true,
-      'speedIn'            => 200,
-      'speedOut'           => 200,
-      'transitionIn'       => 'elastic',
-      'transitionOut'      => 'elastic',
-      'titlePosition'      => 'inside'
+      'loading'     => '<div class="loader" style="width: 128px; height: 128px; opacity: 0.5;"></div>',
+      'closeIcon'   => '&#x2716;',
+      'targetAttr'  => 'data-target',
     );
 
     foreach (array_keys($default_params) as $key) {
@@ -120,49 +134,34 @@
     }
     ksort($params);
 
-    if (empty(document::$snippets['head_tags']['fancybox'])) {
-      document::$snippets['head_tags']['fancybox'] = '<link rel="stylesheet" href="{snippet:template_path}styles/fancybox.css" media="screen" />';
-      document::$snippets['foot_tags']['fancybox'] = '<script src="'. WS_DIR_EXT .'fancybox/jquery.fancybox-1.3.4.pack.js"></script>';
-    }
-
-    if (empty($selector)) {
-      document::$snippets['javascript']['fancybox-'.$selector] = '  $.fancybox({' . PHP_EOL;
-    } else {
-      document::$snippets['javascript']['fancybox-'.$selector] = '  $("a").each(function() {' . PHP_EOL // HTML 5 fix for rel attribute
-                                                               . '    $(this).attr("rel", $(this).attr("data-fancybox-group"));' . PHP_EOL
-                                                               . '  }); ' . PHP_EOL
-                                                               . '  $("body").on("hover", "'. $selector .'", function() { ' . PHP_EOL // Fixes ajax content
-                                                               . '    $'. ($selector ? '("'. $selector .'")' : '') .'.fancybox({' . PHP_EOL;
-    }
-
-    foreach (array_keys($params) as $key) {
-      if (strpos($params[$key], '(') !== false) {
-        document::$snippets['javascript']['fancybox-'.$selector] .= '      "'. $key .'" : '. $params[$key] .',' . PHP_EOL;
-      } else {
-        switch (gettype($params[$key])) {
-          case 'boolean':
-            document::$snippets['javascript']['fancybox-'.$selector] .=
-            '        "'. $key .'" : '.
-            ($params[$key] ? 'true' : 'false') .',' . PHP_EOL;
-            break;
-          case 'integer':
-            document::$snippets['javascript']['fancybox-'.$selector] .= '      "'. $key .'" : '. $params[$key] .',' . PHP_EOL;
-            break;
-          case 'string':
-            document::$snippets['javascript']['fancybox-'.$selector] .= '      "'. $key .'" : "'. $params[$key] .'",' . PHP_EOL;
-            break;
-        }
+    foreach ($params as $key => $value) {
+      switch (gettype($params[$key])) {
+        case 'NULL':
+          document::$snippets['javascript']['featherlight-'.$selector] .= '      '. $key .': null,' . PHP_EOL;
+          break;
+        case 'boolean':
+          document::$snippets['javascript']['featherlight-'.$selector] .= '      '. $key .': '. ($value ? 'true' : 'false') .',' . PHP_EOL;
+          break;
+        case 'integer':
+          document::$snippets['javascript']['featherlight-'.$selector] .= '      '. $key .': '. $value .',' . PHP_EOL;
+          break;
+        case 'string':
+          if (preg_match('#^function\s?\(#', $value)) {
+            document::$snippets['javascript']['featherlight-'.$selector] .= '      '. $key .': '. $value .',' . PHP_EOL;
+          } else if (preg_match('#^undefined$#', $value)) {
+            document::$snippets['javascript']['featherlight-'.$selector] .= '      '. $key .': undefined,' . PHP_EOL;
+          } else {
+            document::$snippets['javascript']['featherlight-'.$selector] .= '      '. $key .': \''. addslashes($value) .'\',' . PHP_EOL;
+          }
+          break;
+        case 'array':
+          document::$snippets['javascript']['featherlight-'.$selector] .= '      '. $key .': [\''. implode('\', \'', $value) .'\'],' . PHP_EOL;
+          break;
       }
     }
 
-    document::$snippets['javascript']['fancybox-'.$selector] = rtrim(document::$snippets['javascript']['fancybox-'.$selector], ','.PHP_EOL) . PHP_EOL;
-
-    if (empty($selector)) {
-      document::$snippets['javascript']['fancybox-'.$selector] .= '  });';
-    } else {
-      document::$snippets['javascript']['fancybox-'.$selector] .= '    });' . PHP_EOL
-                                                                . '  });';
-    }
+    document::$snippets['javascript']['featherlight-'.$selector] = rtrim(document::$snippets['javascript']['featherlight-'.$selector], ','.PHP_EOL) . PHP_EOL
+                                                                 . '  });';
   }
 
   function draw_pagination($pages) {
@@ -171,7 +170,7 @@
 
     if ($pages < 2) return false;
 
-    if (empty($_GET['page']) && $_GET['page'] < 2) $_GET['page'] = 1;
+    if (empty($_GET['page']) || $_GET['page'] < 2) $_GET['page'] = 1;
 
     if ($_GET['page'] > 1) document::$snippets['head_tags']['prev'] = '<link rel="prev" href="'. document::href_ilink(null, array('page' => $_GET['page']-1), true) .'" />';
     if ($_GET['page'] < $pages) document::$snippets['head_tags']['next'] = '<link rel="next" href="'. document::href_ilink(null, array('page' => $_GET['page']+1), true) .'" />';
@@ -234,5 +233,3 @@
 
     return $html;
   }
-
-?>

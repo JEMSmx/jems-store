@@ -1,19 +1,16 @@
 <?php
 
-  if (empty($_POST)) {
-    $_POST['newsletter'] = '1';
-  }
-
   header('X-Robots-Tag: noindex');
   document::$snippets['head_tags']['noindex'] = '<meta name="robots" content="noindex" />';
-  document::$snippets['title'][] = language::translate('create_account:head_title', 'Create Account');
+  document::$snippets['title'][] = language::translate('title_create_account', 'Create Account');
 
-  breadcrumbs::add(language::translate('title_create_account', 'Create Account'), document::ilink('create_account'));
+  breadcrumbs::add(language::translate('title_create_account', 'Create Account'));
 
   if (!$_POST) {
     foreach (customer::$data as $key => $value) {
       $_POST[$key] = $value;
     }
+    $_POST['newsletter'] = '1';
   }
 
   if (!empty(customer::$data['id'])) {
@@ -39,11 +36,15 @@
 
     if (empty($_POST['firstname'])) notices::add('errors', language::translate('error_missing_firstname', 'You must enter a first name.'));
     if (empty($_POST['lastname'])) notices::add('errors', language::translate('error_missing_lastname', 'You must enter a last name.'));
-    if (empty($_POST['address1'])) notices::add('errors', language::translate('error_missing_address1', 'You must enter an address.'));
-    if (empty($_POST['city'])) notices::add('errors', language::translate('error_missing_city', 'You must enter a city.'));
-    if (empty($_POST['postcode']) && !empty($_POST['country_code']) && functions::reference_get_postcode_required($_POST['country_code'])) notices::add('errors', language::translate('error_missing_postcode', 'You must enter a postcode.'));
+    //if (empty($_POST['address1'])) notices::add('errors', language::translate('error_missing_address1', 'You must enter an address.'));
+    //if (empty($_POST['city'])) notices::add('errors', language::translate('error_missing_city', 'You must enter a city.'));
+    //if (empty($_POST['postcode']) && !empty($_POST['country_code']) && reference::country($_POST['country_code'])->postcode_format) notices::add('errors', language::translate('error_missing_postcode', 'You must enter a postcode.'));
     if (empty($_POST['country_code'])) notices::add('errors', language::translate('error_missing_country', 'You must select a country.'));
-    if (empty($_POST['zone_code']) && !empty($_POST['country_code']) && functions::reference_country_num_zones($_POST['country_code'])) notices::add('errors', language::translate('error_missing_zone', 'You must select a zone.'));
+    if (empty($_POST['zone_code']) && !empty($_POST['country_code']) && reference::country($_POST['country_code'])->zones) notices::add('errors', language::translate('error_missing_zone', 'You must select a zone.'));
+
+    $mod_customer = new mod_customer();
+    $result = $mod_customer->validate($_POST);
+    if (!empty($result['error'])) notices::add('errors', $result['error']);
 
     if (empty(notices::$data['errors'])) {
 
@@ -64,7 +65,6 @@
         'country_code',
         'zone_code',
         'phone',
-        'mobile',
         'newsletter',
       );
 
@@ -108,6 +108,5 @@
     }
   }
 
-  $page = new view();
-  echo $page->stitch('views/box_create_account');
-?>
+  $_page = new view();
+  echo $_page->stitch('pages/create_account');

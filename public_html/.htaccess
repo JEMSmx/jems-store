@@ -23,17 +23,14 @@ ErrorDocument 500 "Internal Server Error"
   #RewriteRule ^ http://www.mydomain.com%{REQUEST_URI} [R=301,L]
 
   # Redirect non-www to www
-  RewriteCond %{HTTP_HOST} !^www\.
-  RewriteCond %{REQUEST_METHOD} !=POST
-  RewriteCond %{HTTP_HOST} !^192.168.33
-  RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R=301,L]
+  #RewriteCond %{HTTP_HOST} !^www\.
+  #RewriteCond %{REQUEST_METHOD} !=POST
+  #RewriteRule ^ http://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
   # Force HTTPS (Standard SSL)
-  RewriteCond %{HTTPS} off
-  RewriteCond %{REQUEST_METHOD} !=POST
-  RewriteCond %{HTTP_HOST} !^192.168.33
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
-
+  #RewriteCond %{HTTPS} off
+  #RewriteCond %{REQUEST_METHOD} !=POST
+  #RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
   # Force HTTPS (CloudFlare Flexi SSL / Load Balancing Servers)
   #RewriteCond %{HTTP:X-Forwarded-Proto} =http

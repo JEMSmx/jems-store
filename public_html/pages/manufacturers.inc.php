@@ -4,10 +4,10 @@
 
   breadcrumbs::add(language::translate('title_manufacturers', 'Manufacturers'));
 
-  $box_manufacturers_cache_id = cache::cache_id('box_manufacturers', array('basename', 'get', 'language', 'currency', 'account', 'prices'));
-  if (cache::capture($box_manufacturers_cache_id, 'file')) {
+  $manufacturers_cache_id = cache::cache_id('manufacturers', array('basename', 'get', 'language', 'currency', 'account', 'prices'));
+  if (cache::capture($manufacturers_cache_id, 'file')) {
 
-    $box_manufacturers = new view();
+    $_page = new view();
 
     $manufacturers_query = database::query(
       "select m.id, m.name, m.image, mi.short_description, mi.link
@@ -17,10 +17,10 @@
       order by name;"
     );
 
-    $box_manufacturers->snippets['manufacturers'] = array();
+    $_page->snippets['manufacturers'] = array();
 
     while($manufacturer = database::fetch($manufacturers_query)) {
-      $box_manufacturers->snippets['manufacturers'][] = array(
+      $_page->snippets['manufacturers'][] = array(
         'id' => $manufacturer['id'],
         'name' => $manufacturer['name'],
         'image' => array(
@@ -32,8 +32,7 @@
       );
     }
 
-    echo $box_manufacturers->stitch('views/box_manufacturers');
+    echo $_page->stitch('pages/manufacturers');
 
-    cache::end_capture($box_manufacturers_cache_id);
+    cache::end_capture($manufacturers_cache_id);
   }
-?>

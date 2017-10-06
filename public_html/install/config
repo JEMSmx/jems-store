@@ -19,6 +19,7 @@
   define('WS_DIR_EXT',         WS_DIR_HTTP_HOME . 'ext/');
   define('WS_DIR_IMAGES',      WS_DIR_HTTP_HOME . 'images/');
   define('WS_DIR_INCLUDES',    WS_DIR_HTTP_HOME . 'includes/');
+  define('WS_DIR_LOGS',        WS_DIR_HTTP_HOME . 'logs/');
   define('WS_DIR_PAGES',       WS_DIR_HTTP_HOME . 'pages/');
   
   define('WS_DIR_BOXES',       WS_DIR_INCLUDES  . 'boxes/');
@@ -60,6 +61,7 @@
   define('DB_TABLE_LANGUAGES',                         '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'languages`');
   define('DB_TABLE_MANUFACTURERS',                     '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'manufacturers`');
   define('DB_TABLE_MANUFACTURERS_INFO',                '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'manufacturers_info`');
+  define('DB_TABLE_MODULES',                           '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'modules`');
   define('DB_TABLE_OPTION_GROUPS',                     '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'option_groups`');
   define('DB_TABLE_OPTION_GROUPS_INFO',                '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'option_groups_info`');
   define('DB_TABLE_OPTION_VALUES',                     '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'option_values`');
@@ -90,6 +92,7 @@
   define('DB_TABLE_SETTINGS',                          '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'settings`');
   define('DB_TABLE_SETTINGS_GROUPS',                   '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'settings_groups`');
   define('DB_TABLE_SLIDES',                            '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'slides`');
+  define('DB_TABLE_SLIDES_INFO',                       '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'slides_info`');
   define('DB_TABLE_SOLD_OUT_STATUSES',                 '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'sold_out_statuses`');
   define('DB_TABLE_SOLD_OUT_STATUSES_INFO',            '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'sold_out_statuses_info`');
   define('DB_TABLE_SUPPLIERS',                         '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'suppliers`');
@@ -100,6 +103,9 @@
   define('DB_TABLE_ZONES',                             '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'zones`');
   define('DB_TABLE_ZONES_TO_GEO_ZONES',                '`'. DB_DATABASE .'`.`'. DB_TABLE_PREFIX . 'zones_to_geo_zones`');
 
+// Database tables (Add-ons)
+  /* Your added tables here ... */
+
 ######################################################################
 ## Application #######################################################
 ######################################################################
@@ -108,10 +114,10 @@
   error_reporting(version_compare(PHP_VERSION, '5.4.0', '>=') ? E_ALL & ~E_STRICT : E_ALL);
   ini_set('ignore_repeated_errors', 'On');
   ini_set('log_errors', 'On');
-  ini_set('error_log', FS_DIR_HTTP_ROOT . WS_DIR_DATA . 'errors.log');
+  ini_set('error_log', FS_DIR_HTTP_ROOT . WS_DIR_LOGS . 'errors.log');
   ini_set('display_startup_errors', 'Off');
   ini_set('display_errors', 'Off');
-  if (in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', $_SERVER['SERVER_ADDR'], '{CLIENT_IP}'))) {
+  if (in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '{CLIENT_IP}'))) {
     error_reporting(E_ALL);
     ini_set('display_startup_errors', 'On');
     ini_set('display_errors', 'On');

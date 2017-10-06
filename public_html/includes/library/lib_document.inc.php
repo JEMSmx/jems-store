@@ -2,7 +2,6 @@
 
   class document {
 
-    private static $_cache = array();
     public static $template = '';
     public static $layout = 'default';
     public static $snippets = array();
@@ -20,7 +19,6 @@
 
     //public static function startup() {
     //}
-
 
     public static function before_capture() {
 
@@ -41,12 +39,17 @@
 
       self::$snippets['title'] = array(settings::get('store_name'));
 
-      //self::$snippets['head_tags']['favicon'] = '<link rel="shortcut icon" href="'. WS_DIR_HTTP_HOME .'favicon.ico">' . PHP_EOL;
+      self::$snippets['head_tags']['favicon'] = '<link rel="shortcut icon" href="'. WS_DIR_HTTP_HOME .'favicon.ico">' . PHP_EOL;
 
+
+    // CDN content
+      //self::$snippets['head_tags']['dns-prefetch-jsdelivr'] = '<link rel="dns-prefetch" href="//cdn.jsdelivr.net">';
+      //self::$snippets['head_tags']['fontawesome'] = '<link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css" />';
+      //self::$snippets['foot_tags']['jquery'] = '<script src="//cdn.jsdelivr.net/g/jquery@3.2.1"></script>';
+
+    // Local content
       self::$snippets['head_tags']['fontawesome'] = '<link rel="stylesheet" href="'. WS_DIR_EXT .'fontawesome/css/font-awesome.min.css" />';
-
-      self::$snippets['foot_tags']['jquery'] = '<script src="'. WS_DIR_EXT .'jquery/jquery-1.12.4.min.js"></script>' . PHP_EOL
-                                             . '<script src="'. WS_DIR_EXT .'jquery/jquery-migrate-1.4.1.min.js"></script>';
+      self::$snippets['foot_tags']['jquery'] = '<script src="'. WS_DIR_EXT .'jquery/jquery-3.2.1.min.js"></script>';
 
     // Hreflang
       if (!empty(route::$route['page']) && settings::get('seo_links_language_prefix')) {
@@ -59,7 +62,23 @@
       }
 
     // Get template settings
-      self::$settings = unserialize(settings::get('store_template_catalog_settings'));
+      include vmod::check(FS_DIR_HTTP_ROOT . WS_DIR_TEMPLATES . settings::get('store_template_catalog') .'/config.inc.php');
+      self::$settings = @json_decode(settings::get('store_template_catalog_settings'), true);
+      foreach (array_keys($template_config) as $i) {
+        if (!isset(self::$settings[$template_config[$i]['key']])) self::$settings[$template_config[$i]['key']] = $template_config[$i]['default_value'];
+      }
+
+    // LiteCart JavaScript Environment
+      $config = array(
+        'platform' => array(
+          'url' => document::ilink(''),
+        ),
+        'template' => array(
+          'url' => document::link(WS_DIR_TEMPLATE),
+          'settings' => self::$settings,
+        ),
+      );
+      self::$snippets['head_tags'][] = "<script>var config = ". json_encode($config, null) .";</script>";
     }
 
     //public static function after_capture() {
@@ -77,8 +96,8 @@
     // Prepare styles
       if (!empty(self::$snippets['style'])) {
         self::$snippets['style'] = '<style>' . PHP_EOL
-                                  . implode(PHP_EOL . PHP_EOL, self::$snippets['style']) . PHP_EOL
-                                  . '</style>' . PHP_EOL;
+                                 . implode(PHP_EOL . PHP_EOL, self::$snippets['style']) . PHP_EOL
+                                 . '</style>' . PHP_EOL;
       }
 
     // Prepare javascript
@@ -98,16 +117,12 @@
 
       if (!function_exists('replace_first_occurrence')) {
         function replace_first_occurrence($search, $replace, $subject) {
-          if (strlen($search) > 4096) {
-            return preg_replace('#'. preg_quote(mb_substr($search, 0, 2048), '#') .'.*?'. preg_quote(mb_substr($search, -2048), '#') .'#s', $replace, $subject, 1);
-          } else {
-            return preg_replace('#'. preg_quote($search, '#') .'#', $replace, $subject, 1);
-          }
+          return implode($replace, explode($search, $subject, 2));
         }
       }
 
     // Extract and group in content stylesheets
-      if (preg_match('#^.*<html(?:[^>]+)?>(.*)</html>.*$#is', $GLOBALS['output'], $matches)) {
+      if (preg_match('#<html(?:[^>]+)?>(.*)</html>#is', $GLOBALS['output'], $matches)) {
         $content = $matches[1];
 
         $stylesheets = array();
@@ -129,7 +144,7 @@
       }
 
     // Extract and group in content styling
-      if (preg_match('#^.*<html(?:[^>]+)?>(.*)</html>.*$#is', $GLOBALS['output'], $matches)) {
+      if (preg_match('#<html(?:[^>]+)?>(.*)</html>#is', $GLOBALS['output'], $matches)) {
         $content = $matches[1];
 
         $styles = array();
@@ -155,7 +170,7 @@
       }
 
     // Extract and group javascript resources
-      if (preg_match('#^.*<body(?:[^>]+)?>(.*)</body>.*$#is', $GLOBALS['output'], $matches)) {
+      if (preg_match('#<body(?:[^>]+)?>(.*)</body>#is', $GLOBALS['output'], $matches)) {
         $content = $matches[1];
 
         $js_resources = array();
@@ -178,11 +193,11 @@
       }
 
     // Extract and group inline javascript
-      if (preg_match('#^.*<body(?:[^>]+)?>(.*)</body>.*$#is', $GLOBALS['output'], $matches)) {
+      if (preg_match('#<body(?:[^>]+)?>(.*)</body>#is', $GLOBALS['output'], $matches)) {
         $content = $matches[1];
 
         $javascript = array();
-        if (preg_match_all('#<script(?:[^>]*\stype="(?:application|text)/javascript")?[^>]*>(?!</script>)(.*?)</script>\R?#is', $content, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all('#<script(?:[^>]*\stype="(?:application|text)/javascript")?>(?!</script>)(.*?)</script>\R?#is', $content, $matches, PREG_SET_ORDER)) {
 
           foreach ($matches as $match) {
             if ($GLOBALS['output'] = replace_first_occurrence($match[0], '', $GLOBALS['output'], 1)) {
@@ -193,7 +208,9 @@
           if (!empty($javascript)) {
             $javascript = '<script>' . PHP_EOL
                         . '<!--/*--><![CDATA[/*><!--*/' . PHP_EOL
+                        . '$(document).ready(function(){' . PHP_EOL
                         . implode(PHP_EOL . PHP_EOL, $javascript) . PHP_EOL
+                        . '});' . PHP_EOL
                         . '/*]]>*/-->' . PHP_EOL
                         . '</script>' . PHP_EOL;
 
@@ -206,8 +223,8 @@
 
     // Clean orphan snippets
       $search = array(
-        '#\{snippet:[^\}]+\}#',
-        '#\R?<!--snippet:[^-->]+-->\R?#',
+        '#<!--snippet:[^-->]+-->\R?#',
+        '#\{snippet:[^\}]+\}\R?#',
       );
 
       $GLOBALS['output'] = preg_replace($search, '', $GLOBALS['output']);
@@ -256,5 +273,3 @@
       return htmlspecialchars(self::link($document, $new_params, $inherit_params, $skip_params, $language_code));
     }
   }
-
-?>

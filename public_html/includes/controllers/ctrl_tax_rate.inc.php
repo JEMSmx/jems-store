@@ -1,9 +1,10 @@
 <?php
 
   class ctrl_tax_rate {
-    public $data = array();
+    public $data;
 
     public function __construct($tax_rate_id=null) {
+
       if ($tax_rate_id !== null) {
         $this->load((int)$tax_rate_id);
       } else {
@@ -19,21 +20,29 @@
         "show fields from ". DB_TABLE_TAX_RATES .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
     }
 
     public function load($tax_rate_id) {
+
+      $this->reset();
+
       $tax_rate_query = database::query(
         "select * from ". DB_TABLE_TAX_RATES ."
         where id = '". (int)$tax_rate_id ."'
         limit 1;"
       );
-      $this->data = database::fetch($tax_rate_query);
-      if (empty($this->data)) trigger_error('Could not find tax rate (ID: '. (int)$tax_rate_id .') in database.', E_USER_ERROR);
+
+      if ($tax_rate = database::fetch($tax_rate_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($tax_rate, $this->data));
+      } else {
+        trigger_error('Could not find tax rate (ID: '. (int)$tax_rate_id .') in database.', E_USER_ERROR);
+      }
     }
 
     public function save() {
+
       if (empty($this->data['id'])) {
         database::query(
           "insert into ". DB_TABLE_TAX_RATES ."
@@ -77,5 +86,3 @@
       cache::clear_cache('tax');
     }
   }
-
-?>

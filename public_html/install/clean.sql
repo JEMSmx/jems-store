@@ -24,6 +24,8 @@ DROP TABLE IF EXISTS `lc_manufacturers`;
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `lc_manufacturers_info`;
 -- --------------------------------------------------------
+DROP TABLE IF EXISTS `lc_modules`;
+-- --------------------------------------------------------
 DROP TABLE IF EXISTS `lc_option_groups`;
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `lc_option_groups_info`;
@@ -86,6 +88,8 @@ DROP TABLE IF EXISTS `lc_settings_groups`;
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `lc_slides`;
 -- --------------------------------------------------------
+DROP TABLE IF EXISTS `lc_slides_info`;
+-- --------------------------------------------------------
 DROP TABLE IF EXISTS `lc_sold_out_statuses`;
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `lc_sold_out_statuses_info`;
@@ -103,9 +107,3 @@ DROP TABLE IF EXISTS `lc_users`;
 DROP TABLE IF EXISTS `lc_zones`;
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `lc_zones_to_geo_zones`;
--- --------------------------------------------------------
-DROP TABLE IF EXISTS `lc_products_videos`;
--- --------------------------------------------------------
-DROP TABLE IF EXISTS `k_product_showcases_column`;
--- --------------------------------------------------------
-DROP TABLE IF EXISTS `k_product_showcases_row`;

@@ -18,4 +18,3 @@ substituted for the real file in the include path.
 ==========================================================
 See website for additional information, usage, and syntax:
 http://vqmod.com
-==========================================================

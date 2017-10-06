@@ -26,60 +26,71 @@
 
   if (!empty($_POST['update_rates'])) {
 
-    foreach (array_keys(currency::$currencies) as $currency_code) {
+    if (!empty($_POST['currencies'])) {
+      foreach (array_keys($_POST['currencies']) as $currency_code) {
 
-      if ($currency_code == settings::get('store_currency_code')) continue;
+        if ($currency_code == settings::get('store_currency_code')) continue;
 
-      $url = document::link('http://download.finance.yahoo.com/d/quotes.csv', array('f' => 'l1', 's' => settings::get('store_currency_code') . $currency_code .'=X'));
+        try {
 
-      $result = functions::http_fetch($url);
+          $url = document::link('http://download.finance.yahoo.com/d/quotes.csv', array('f' => 'l1', 's' => settings::get('store_currency_code') . $currency_code .'=X'));
 
-      if (empty($result)) {
-        trigger_error('Could not update currency value for '. $currency_code .': No data ('. $url .')', E_USER_ERROR);
-        continue;
+          $client = new http_client();
+          $response = @$client->call($url);
+
+          if (empty($response)) throw new Exception(strtr(language::translate('error_failed_updating_currency', 'Could not update currency rate for %currency_code'), array('%currency_code' => $currency_code)));
+
+          $value = (float)trim($response) * currency::$currencies[settings::get('store_currency_code')]['value'];
+
+          if (empty($value)) throw new Exception(strtr(language::translate('error_failed_updating_currency', 'Could not update currency rate for %currency_code'), array('%currency_code' => $currency_code)));
+
+          database::query(
+            "update ". DB_TABLE_CURRENCIES ."
+            set value = '". (float)$value ."'
+            where code = '". database::input($currency_code) ."'
+            limit 1;"
+          );
+
+          notices::$data['success'][] = strtr(language::translate('success_currency_rates_updated_for_currency', 'Currency rates updated for %currency_code'), array('%currency_code' => $currency_code));
+
+        } catch (Exception $e) {
+          notices::$data['errors'][] = $e->getMessage();
+        }
       }
 
-      $value = (float)trim($result) * currency::$currencies[settings::get('store_currency_code')]['value'];
 
-      if (empty($value)) {
-        trigger_error('Could not update currency value for '. $currency_code .': No value ('. $url .')', E_USER_ERROR);
-        continue;
-      }
-
-      database::query(
-        "update ". DB_TABLE_CURRENCIES ."
-        set value = '". (float)$value ."'
-        where code = '". database::input($currency_code) ."'
-        limit 1;"
-      );
+      header('Location: '. document::link());
+      exit;
     }
-
-    notices::$data['success'][] = language::translate('success_currency_rates_updated', 'Currency rates updated');
-    header('Location: '. document::link());
-    exit;
   }
 ?>
-<div style="float: right;"><?php echo functions::form_draw_form_begin() . functions::form_draw_button('update_rates', language::translate('title_update_rates', 'Update Rates'), 'submit', 'onclick="'. htmlspecialchars('if(!confirm("'. language::translate('text_are_you_sure', 'Are you sure?') .'")) return false;') .'"', 'fa-refresh') . functions::form_draw_form_end(); ?></div>
-<div style="float: right;"><?php echo functions::form_draw_link_button(document::link('', array('doc' => 'edit_currency'), true), language::translate('title_add_new_currency', 'Add New Currency'), '', 'add'); ?></div>
-<h1 style="margin-top: 0px;"><?php echo $app_icon; ?> <?php echo language::translate('title_currencies', 'Currencies'); ?></h1>
+<ul class="list-inline pull-right">
+  <li><?php echo functions::form_draw_link_button(document::link('', array('doc' => 'edit_currency'), true), language::translate('title_add_new_currency', 'Add New Currency'), '', 'add'); ?></li>
+</ul>
+
+<h1><?php echo $app_icon; ?> <?php echo language::translate('title_currencies', 'Currencies'); ?></h1>
 
 <?php echo functions::form_draw_form_begin('currencies_form', 'post'); ?>
 
-  <table width="100%" align="center" class="dataTable">
-    <tr class="header">
-      <th><?php echo functions::draw_fonticon('fa-check-square-o fa-fw checkbox-toggle'); ?></th>
-      <th></th>
-      <th><?php echo language::translate('title_id', 'ID'); ?></th>
-      <th style="text-align: center;"><?php echo language::translate('title_code', 'Code'); ?></th>
-      <th width="100%"><?php echo language::translate('title_name', 'Name'); ?></th>
-      <th style="text-align: center;"><?php echo language::translate('title_value', 'Value'); ?></th>
-      <th style="text-align: center;"><?php echo language::translate('title_prefix', 'Prefix'); ?></th>
-      <th style="text-align: center;"><?php echo language::translate('title_suffix', 'Suffix'); ?></th>
-      <th style="text-align: center;"><?php echo language::translate('title_default_currency', 'Default Currency'); ?></th>
-      <th style="text-align: center;"><?php echo language::translate('title_store_currency', 'Store Currency'); ?></th>
-      <th style="text-align: center;"><?php echo language::translate('title_priority', 'Priority'); ?></th>
-      <th>&nbsp;</th>
-    </tr>
+  <table class="table table-striped data-table">
+    <thead>
+      <tr>
+        <th><?php echo functions::draw_fonticon('fa-check-square-o fa-fw checkbox-toggle', 'data-toggle="checkbox-toggle"'); ?></th>
+        <th></th>
+        <th><?php echo language::translate('title_id', 'ID'); ?></th>
+        <th><?php echo language::translate('title_code', 'Code'); ?></th>
+        <th class="main"><?php echo language::translate('title_name', 'Name'); ?></th>
+        <th><?php echo language::translate('title_value', 'Value'); ?></th>
+        <th><?php echo language::translate('title_decimals', 'Decimals'); ?></th>
+        <th><?php echo language::translate('title_prefix', 'Prefix'); ?></th>
+        <th><?php echo language::translate('title_suffix', 'Suffix'); ?></th>
+        <th><?php echo language::translate('title_default_currency', 'Default Currency'); ?></th>
+        <th><?php echo language::translate('title_store_currency', 'Store Currency'); ?></th>
+        <th><?php echo language::translate('title_priority', 'Priority'); ?></th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
 <?php
   $currencies_query = database::query(
     "select * from ". DB_TABLE_CURRENCIES ."
@@ -90,47 +101,42 @@
 
     while ($currency = database::fetch($currencies_query)) {
 ?>
-    <tr class="row<?php echo !$currency['status'] ? ' semi-transparent' : null; ?>">
+    <tr class="<?php echo empty($currency['status']) ? 'semi-transparent' : null; ?>">
       <td><?php echo functions::form_draw_checkbox('currencies['. $currency['code'] .']', $currency['code']); ?></td>
       <td><?php echo functions::draw_fonticon('fa-circle', 'style="color: '. (!empty($currency['status']) ? '#99cc66' : '#ff6666') .';"'); ?></td>
       <td><?php echo $currency['id']; ?></td>
       <td><?php echo $currency['code']; ?></td>
       <td><a href="<?php echo document::href_link('', array('doc' => 'edit_currency', 'currency_code' => $currency['code']), true); ?>"><?php echo $currency['name']; ?></a></td>
-      <td style="text-align: right;"><?php echo $currency['value']; ?></td>
-      <td style="text-align: center;"><?php echo $currency['prefix']; ?></td>
-      <td style="text-align: center;"><?php echo $currency['suffix']; ?></td>
-      <td style="text-align: center;"><?php echo ($currency['code'] == settings::get('default_currency_code')) ? 'x' : ''; ?></td>
-      <td style="text-align: center;"><?php echo ($currency['code'] == settings::get('store_currency_code')) ? 'x' : ''; ?></td>
-      <td style="text-align: right;"><?php echo $currency['priority']; ?></td>
-      <td style="text-align: right;"><a href="<?php echo document::href_link('', array('doc' => 'edit_currency', 'currency_code' => $currency['code']), true); ?>" title="<?php echo language::translate('title_edit', 'Edit'); ?>"><?php echo functions::draw_fonticon('fa-pencil'); ?></a></td>
+      <td class="text-right"><?php echo $currency['value']; ?></td>
+      <td class="text-center"><?php echo $currency['decimals']; ?></td>
+      <td class="text-center"><?php echo $currency['prefix']; ?></td>
+      <td class="text-center"><?php echo $currency['suffix']; ?></td>
+      <td class="text-center"><?php echo ($currency['code'] == settings::get('default_currency_code')) ? functions::draw_fonticon('fa-check') : ''; ?></td>
+      <td class="text-center"><?php echo ($currency['code'] == settings::get('store_currency_code')) ? functions::draw_fonticon('fa-check') : ''; ?></td>
+      <td class="text-center"><?php echo $currency['priority']; ?></td>
+      <td class="text-right"><a href="<?php echo document::href_link('', array('doc' => 'edit_currency', 'currency_code' => $currency['code']), true); ?>" title="<?php echo language::translate('title_edit', 'Edit'); ?>"><?php echo functions::draw_fonticon('fa-pencil'); ?></a></td>
     </tr>
 <?php
     }
   }
 ?>
-    <tr class="footer">
-      <td colspan="12"><?php echo language::translate('title_currencies', 'Currencies'); ?>: <?php echo database::num_rows($currencies_query); ?></td>
-    </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="13"><?php echo language::translate('title_currencies', 'Currencies'); ?>: <?php echo database::num_rows($currencies_query); ?></td>
+      </tr>
+    </tfoot>
   </table>
 
-  <script>
-    $(".dataTable .checkbox-toggle").click(function() {
-      $(this).closest("form").find(":checkbox").each(function() {
-        $(this).attr('checked', !$(this).attr('checked'));
-      });
-      $(".dataTable .checkbox-toggle").attr("checked", true);
-    });
+  <ul class="list-inline">
+    <li>
+      <div class="btn-group">
+        <?php echo functions::form_draw_button('enable', language::translate('title_enable', 'Enable'), 'submit', '', 'on'); ?>
+        <?php echo functions::form_draw_button('disable', language::translate('title_disable', 'Disable'), 'submit', '', 'off'); ?>
+      </div>
+    </li>
 
-    $('.dataTable tr').click(function(event) {
-      if ($(event.target).is('input:checkbox')) return;
-      if ($(event.target).is('a, a *')) return;
-      if ($(event.target).is('th')) return;
-      $(this).find('input:checkbox').trigger('click');
-    });
-  </script>
+    <li><?php echo functions::form_draw_button('update_rates', language::translate('title_update_rates', 'Update Rates'), 'submit', 'onclick="'. htmlspecialchars('if(!confirm("'. language::translate('text_are_you_sure', 'Are you sure?') .'")) return false;') .'"', 'fa-refresh'); ?></li>
+  </ul>
 
-  <p><span class="button-set"><?php echo functions::form_draw_button('enable', language::translate('title_enable', 'Enable'), 'submit', '', 'on'); ?> <?php echo functions::form_draw_button('disable', language::translate('title_disable', 'Disable'), 'submit', '', 'off'); ?></span></p>
-
-<?php
-  echo functions::form_draw_form_end();
-?>
+<?php echo functions::form_draw_form_end(); ?>

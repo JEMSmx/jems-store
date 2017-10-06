@@ -38,16 +38,11 @@
     setcookie('zone_code', $_POST['zone_code'], time() + (60*60*24*365), WS_DIR_HTTP_HOME);
     setcookie('display_prices_including_tax', $_POST['display_prices_including_tax'], time() + (60*60*24*365), WS_DIR_HTTP_HOME);
 
-    if (empty($_GET['redirect'])) $_GET['redirect'] = WS_DIR_HTTP_HOME;
+    if (empty($_GET['redirect'])) $_GET['redirect'] = document::ilink('', array(), null, null, $_POST['language_code']);
 
     header('Location: '. $_GET['redirect']);
     exit;
   }
 
-  $page = new view();
-  echo $page->stitch('views/box_regional_settings');
-
-  if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-    require_once vmod::check(FS_DIR_HTTP_ROOT . WS_DIR_INCLUDES . 'app_footer.inc.php');
-  }
-?>
+  $_page = new view();
+  echo $_page->stitch('pages/regional_settings');

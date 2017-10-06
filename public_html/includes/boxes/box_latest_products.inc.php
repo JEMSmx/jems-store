@@ -1,7 +1,7 @@
 <?php
   if (settings::get('box_latest_products_num_items') == 0) return;
 
-  functions::draw_fancybox('a.fancybox');
+  functions::draw_lightbox();
 
   $box_latest_products_cache_id = cache::cache_id('box_latest_products', array('language', 'currency', 'prices'));
   if (cache::capture($box_latest_products_cache_id, 'file')) {
@@ -21,4 +21,3 @@
 
     cache::end_capture($box_latest_products_cache_id);
   }
-?>

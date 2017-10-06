@@ -12,7 +12,7 @@
 
   $customer = new ctrl_customer(customer::$data['id']);
 
-  if (!$_POST) {
+  if (empty($_POST)) {
     foreach ($customer->data as $key => $value) {
       $_POST[$key] = $value;
     }
@@ -35,18 +35,18 @@
     if (empty($_POST['lastname'])) notices::add('errors', language::translate('error_missing_lastname', 'You must enter a last name.'));
     if (empty($_POST['address1'])) notices::add('errors', language::translate('error_missing_address1', 'You must enter an address.'));
     if (empty($_POST['city'])) notices::add('errors', language::translate('error_missing_city', 'You must enter a city.'));
-    if (empty($_POST['postcode']) && !empty($_POST['country_code']) && functions::reference_get_postcode_required($_POST['country_code'])) notices::add('errors', language::translate('error_missing_postcode', 'You must enter a postcode.'));
+    if (empty($_POST['postcode']) && !empty($_POST['country_code']) && reference::country($_POST['country_code'])->postcode_format) notices::add('errors', language::translate('error_missing_postcode', 'You must enter a postcode.'));
     if (empty($_POST['country_code'])) notices::add('errors', language::translate('error_missing_country', 'You must select a country.'));
-    if (empty($_POST['zone_code']) && !empty($_POST['country_code']) && functions::reference_country_num_zones($_POST['country_code'])) notices::add('errors', language::translate('error_missing_zone', 'You must select a zone.'));
+    if (empty($_POST['zone_code']) && !empty($_POST['country_code']) && reference::country($_POST['country_code'])->zones) notices::add('errors', language::translate('error_missing_zone', 'You must select a zone.'));
 
     if (!empty($_POST['different_shipping_address'])) {
       if (empty($_POST['shipping_address']['firstname'])) notices::add('errors', language::translate('error_missing_firstname', 'You must enter a first name.'));
       if (empty($_POST['shipping_address']['lastname'])) notices::add('errors', language::translate('error_missing_lastname', 'You must enter a last name.'));
       if (empty($_POST['shipping_address']['address1'])) notices::add('errors', language::translate('error_missing_address1', 'You must enter an address.'));
       if (empty($_POST['shipping_address']['city'])) notices::add('errors', language::translate('error_missing_city', 'You must enter a city.'));
-      if (empty($_POST['shipping_address']['postcode']) && !empty($_POST['shipping_address']['country_code']) && functions::reference_get_postcode_required($_POST['shipping_address']['country_code'])) notices::add('errors', language::translate('error_missing_postcode', 'You must enter a postcode.'));
+      if (empty($_POST['shipping_address']['postcode']) && !empty($_POST['shipping_address']['country_code']) && reference::country($_POST['shipping_address']['country_code'])->postcode_format) notices::add('errors', language::translate('error_missing_postcode', 'You must enter a postcode.'));
       if (empty($_POST['shipping_address']['country_code'])) notices::add('errors', language::translate('error_missing_country', 'You must select a country.'));
-      if (empty($_POST['shipping_address']['zone_code']) && !empty($_POST['shipping_address']['country_code']) && functions::reference_country_num_zones($_POST['shipping_address']['country_code'])) notices::add('errors', language::translate('error_missing_zone', 'You must select a zone.'));
+      if (empty($_POST['shipping_address']['zone_code']) && !empty($_POST['shipping_address']['country_code']) && reference::country($_POST['shipping_address']['country_code'])->zones) notices::add('errors', language::translate('error_missing_zone', 'You must select a zone.'));
     }
 
     if (empty(notices::$data['errors'])) {
@@ -67,7 +67,6 @@
         'country_code',
         'zone_code',
         'phone',
-        'mobile',
         'different_shipping_address',
         'newsletter',
       );
@@ -86,6 +85,7 @@
         'city',
         'country_code',
         'zone_code',
+        'phone',
       );
       foreach ($fields as $field) {
         if (isset($_POST['shipping_address'][$field])) $customer->data['shipping_address'][$field] = $_POST['shipping_address'][$field];
@@ -120,6 +120,5 @@
     }
   }
 
-  $page = new view();
-  echo $page->stitch('views/box_edit_account');
-?>
+  $_page = new view();
+  echo $_page->stitch('pages/edit_account');

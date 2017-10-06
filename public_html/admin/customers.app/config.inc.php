@@ -18,13 +18,17 @@
         'doc' => 'csv',
         'params' => array(),
       ),
+      array(
+        'title' => language::translate('title_newsletter', 'Newsletter'),
+        'doc' => 'newsletter',
+        'params' => array(),
+      ),
     ),
     'docs' => array(
       'customers' => 'customers.inc.php',
       'customers.json' => 'customers.json.inc.php',
       'edit_customer' => 'edit_customer.inc.php',
       'csv' => 'csv.inc.php',
+      'newsletter' => 'newsletter.inc.php',
     ),
   );
-
-?>

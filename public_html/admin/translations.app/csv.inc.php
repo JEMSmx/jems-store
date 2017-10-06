@@ -6,21 +6,6 @@
 
       $csv = file_get_contents($_FILES['file']['tmp_name']);
 
-      if (empty($_POST['delimiter'])) {
-        preg_match('/^([^(\r|\n)]+)/', $csv, $matches);
-        if (strpos($matches[1], ',') !== false) {
-          $_POST['delimiter'] = ',';
-        } elseif (strpos($matches[1], ';') !== false) {
-          $_POST['delimiter'] = ';';
-        } elseif (strpos($matches[1], "\t") !== false) {
-          $_POST['delimiter'] = "\t";
-        } elseif (strpos($matches[1], '|') !== false) {
-          $_POST['delimiter'] = '|';
-        } else {
-          trigger_error('Unable to determine CSV delimiter', E_USER_ERROR);
-        }
-      }
-
       $csv = functions::csv_decode($csv, $_POST['delimiter'], $_POST['enclosure'], $_POST['escapechar'], $_POST['charset']);
 
       $num_inserted_translations = 0;
@@ -87,8 +72,6 @@
 
     if (empty(notices::$data['errors'])) {
 
-      ob_clean();
-
       $csv = array();
 
       $_POST['language_codes'] = array_filter($_POST['language_codes']);
@@ -108,10 +91,12 @@
         $csv[] = $row;
       }
 
+      ob_clean();
+
       if ($_POST['output'] == 'screen') {
-        header('Content-type: text/plain; charset='. $_POST['charset']);
+        header('Content-Type: text/plain; charset='. $_POST['charset']);
       } else {
-        header('Content-type: application/csv; charset='. $_POST['charset']);
+        header('Content-Type: application/csv; charset='. $_POST['charset']);
         header('Content-Disposition: attachment; filename=translations-'. implode('-', $_POST['language_codes']) .'.csv');
       }
 
@@ -119,7 +104,7 @@
         case 'Linux':
           echo functions::csv_encode($csv, $_POST['delimiter'], $_POST['enclosure'], $_POST['escapechar'], $_POST['charset'], "\r");
           break;
-        case 'Max':
+        case 'Mac':
           echo functions::csv_encode($csv, $_POST['delimiter'], $_POST['enclosure'], $_POST['escapechar'], $_POST['charset'], "\n");
           break;
         case 'Win':
@@ -133,76 +118,99 @@
   }
 
 ?>
-<h1 style="margin-top: 0px;"><?php echo $app_icon; ?> <?php echo language::translate('title_csv_import_export', 'CSV Import/Export'); ?></h1>
+<h1><?php echo $app_icon; ?> <?php echo language::translate('title_csv_import_export', 'CSV Import/Export'); ?></h1>
 
-<h2><?php echo language::translate('title_translations', 'Translations'); ?></h2>
 <p><strong><?php echo language::translate('description_scan_before_importing_translations', 'It is recommended to always scan your installation for unregistered translations before performing an import or export.'); ?></strong></p>
 
-<table style="width: 100%;">
-  <tr>
-    <td style="width: 50%; vertical-align: top;">
+<div class="row">
+  <div class="col-md-3">
+
+    <fieldset>
+      <legend><?php echo language::translate('title_import_from_csv', 'Import From CSV'); ?></legend>
+
       <?php echo functions::form_draw_form_begin('import_form', 'post', '', true); ?>
-      <h3><?php echo language::translate('title_import_from_csv', 'Import From CSV'); ?></h3>
-      <table border="0" cellpadding="5" cellspacing="0">
-        <tr>
-          <td colspan="3"><?php echo language::translate('title_csv_file', 'CSV File'); ?></br>
-            <?php echo functions::form_draw_file_field('file'); ?></td>
-        </tr>
-        <tr>
-          <td><?php echo language::translate('title_delimiter', 'Delimiter'); ?><br />
-            <?php echo functions::form_draw_select_field('delimiter', array(array(language::translate('title_auto', 'Auto') .' ('. language::translate('text_default', 'default') .')', ''), array(','),  array(';'), array('TAB', "\t"), array('|')), true, false, 'data-size="auto"'); ?></td>
-          <td><?php echo language::translate('title_enclosure', 'Enclosure'); ?><br />
-            <?php echo functions::form_draw_select_field('enclosure', array(array('" ('. language::translate('text_default', 'default') .')', '"')), true, false, 'data-size="auto"'); ?></td>
-          <td><?php echo language::translate('title_escape_character', 'Escape Character'); ?><br />
-            <?php echo functions::form_draw_select_field('escapechar', array(array('" ('. language::translate('text_default', 'default') .')', '"'), array('\\', '\\')), true, false, 'data-size="auto"'); ?></td>
-        </tr>
-        <tr>
-          <td><?php echo language::translate('title_charset', 'Charset'); ?><br />
-            <?php echo functions::form_draw_select_field('charset', array(array('UTF-8'), array('ISO-8859-1')), true, false, 'data-size="auto"'); ?></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td colspan="3">
-            <label><?php echo functions::form_draw_checkbox('insert', '1', isset($_POST['insert']) ? $_POST['insert'] : '1'); ?> <?php echo language::translate('text_insert_new_entries', 'Insert new entries'); ?></label><br />
-            <label><?php echo functions::form_draw_checkbox('overwrite', '1', isset($_POST['insert']) ? $_POST['insert'] : ''); ?> <?php echo language::translate('text_overwrite_existing_entries', 'Overwrite existing entries'); ?></label>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="3"><?php echo functions::form_draw_button('import', language::translate('title_import', 'Import'), 'submit'); ?></td>
-        </tr>
-      </table>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_csv_file', 'CSV File'); ?></label>
+          <?php echo functions::form_draw_file_field('file'); ?></td>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_delimiter', 'Delimiter'); ?></label>
+          <?php echo functions::form_draw_select_field('delimiter', array(array(language::translate('title_auto', 'Auto') .' ('. language::translate('text_default', 'default') .')', ''), array(','),  array(';'), array('TAB', "\t"), array('|')), true, false); ?>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_enclosure', 'Enclosure'); ?></label>
+          <?php echo functions::form_draw_select_field('enclosure', array(array('" ('. language::translate('text_default', 'default') .')', '"')), true, false); ?>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_escape_character', 'Escape Character'); ?><br />
+          <?php echo functions::form_draw_select_field('escapechar', array(array('" ('. language::translate('text_default', 'default') .')', '"'), array('\\', '\\')), true, false); ?>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_charset', 'Charset'); ?></label>
+          <?php echo functions::form_draw_encodings_list('charset', !empty($_POST['charset']) ? true : 'UTF-8', false); ?>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox"><label><?php echo functions::form_draw_checkbox('insert', '1', isset($_POST['insert']) ? true : '1'); ?> <?php echo language::translate('text_insert_new_entries', 'Insert new entries'); ?></label></div>
+          <div class="checkbox"><label><?php echo functions::form_draw_checkbox('overwrite', '1', isset($_POST['insert']) ? true : ''); ?> <?php echo language::translate('text_overwrite_existing_entries', 'Overwrite existing entries'); ?></label></div>
+        </div>
+
+        <?php echo functions::form_draw_button('import', language::translate('title_import', 'Import'), 'submit'); ?>
+
       <?php echo functions::form_draw_form_end(); ?>
-    </td>
-    <td style="width: 50%; vertical-align: top;">
+
+    </fieldset>
+  </div>
+
+  <div class="col-md-3">
+    <fieldset>
+      <legend><?php echo language::translate('title_export_to_csv', 'Export To CSV'); ?></legend>
+
       <?php echo functions::form_draw_form_begin('export_form', 'post'); ?>
-      <h3><?php echo language::translate('title_export_to_csv', 'Export To CSV'); ?></h3>
-      <?php echo language::translate('title_languages', 'Languages'); ?><br />
-      <table border="0" cellpadding="5" cellspacing="0">
-        <tr>
-          <td colspan="3"><?php echo functions::form_draw_languages_list('language_codes[]', true, true).' '; ?></td>
-        </tr>
-        <tr>
-          <td><?php echo language::translate('title_delimiter', 'Delimiter'); ?><br />
-            <?php echo functions::form_draw_select_field('delimiter', array(array(', ('. language::translate('text_default', 'default') .')', ','), array(';'), array('TAB', "\t"), array('|')), true, false, 'data-size="auto"'); ?></td>
-          <td><?php echo language::translate('title_enclosure', 'Enclosure'); ?><br />
-            <?php echo functions::form_draw_select_field('enclosure', array(array('" ('. language::translate('text_default', 'default') .')', '"')), true, false, 'data-size="auto"'); ?></td>
-          <td><?php echo language::translate('title_escape_character', 'Escape Character'); ?><br />
-            <?php echo functions::form_draw_select_field('escapechar', array(array('" ('. language::translate('text_default', 'default') .')', '"'), array('\\', '\\')), true, false, 'data-size="auto"'); ?></td>
-        </tr>
-        <tr>
-          <td><?php echo language::translate('title_charset', 'Charset'); ?><br />
-            <?php echo functions::form_draw_select_field('charset', array(array('UTF-8'), array('ISO-8859-1')), true, false, 'data-size="auto"'); ?></td>
-          <td><?php echo language::translate('title_line_ending', 'Line Ending'); ?><br />
-            <?php echo functions::form_draw_select_field('eol', array(array('Win'), array('Mac'), array('Linux')), true, false, 'data-size="auto"'); ?></td>
-          <td><?php echo language::translate('title_output', 'Output'); ?><br />
-            <?php echo functions::form_draw_select_field('output', array(array(language::translate('title_file', 'File'), 'file'), array(language::translate('title_screen', 'Screen'), 'screen')), true, false, 'data-size="auto"'); ?></td>
-        </tr>
-        <tr>
-          <td colspan="3"><?php echo functions::form_draw_button('export', language::translate('title_export', 'Export'), 'submit'); ?></td>
-        </tr>
-      </table>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_languages', 'Languages'); ?></label>
+          <?php echo functions::form_draw_languages_list('language_codes[]', true, true).' '; ?></td>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_delimiter', 'Delimiter'); ?></label>
+          <?php echo functions::form_draw_select_field('delimiter', array(array(', ('. language::translate('text_default', 'default') .')', ','), array(';'), array('TAB', "\t"), array('|')), true, false); ?>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_enclosure', 'Enclosure'); ?></label>
+          <?php echo functions::form_draw_select_field('enclosure', array(array('" ('. language::translate('text_default', 'default') .')', '"')), true, false); ?>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_escape_character', 'Escape Character'); ?></label>
+          <?php echo functions::form_draw_select_field('escapechar', array(array('" ('. language::translate('text_default', 'default') .')', '"'), array('\\', '\\')), true, false); ?>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_charset', 'Charset'); ?></label>
+          <?php echo functions::form_draw_encodings_list('charset', !empty($_POST['charset']) ? true : 'UTF-8', false); ?>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_line_ending', 'Line Ending'); ?></label>
+          <?php echo functions::form_draw_select_field('eol', array(array('Win'), array('Mac'), array('Linux')), true, false); ?>
+        </div>
+
+        <div class="form-group">
+          <label><?php echo language::translate('title_output', 'Output'); ?></label>
+          <?php echo functions::form_draw_select_field('output', array(array(language::translate('title_file', 'File'), 'file'), array(language::translate('title_screen', 'Screen'), 'screen')), true, false); ?>
+        </div>
+
+        <?php echo functions::form_draw_button('export', language::translate('title_export', 'Export'), 'submit'); ?>
+
       <?php echo functions::form_draw_form_end(); ?>
-    </td>
-  </tr>
-</table>
+    </fieldset>
+  </div>
+</div>

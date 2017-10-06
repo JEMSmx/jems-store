@@ -4,16 +4,17 @@
 <title>{snippet:title}</title>
 <meta charset="{snippet:charset}" />
 <meta name="robots" content="noindex, nofollow" />
-<link rel="stylesheet" href="{snippet:template_path}styles/loader.css" media="all" />
-<!--snippet:head_tags-->
-<!--snippet:style-->
+{snippet:head_tags}
+<link rel="stylesheet" href="{snippet:template_path}css/framework.min.css" />
+<link rel="stylesheet" href="{snippet:template_path}css/app.min.css" />
+{snippet:style}
 </head>
 <body>
 
-<!--snippet:content-->
+{snippet:content}
 
-<!--snippet:foot_tags-->
-<!--snippet:javascript-->
+{snippet:foot_tags}
+{snippet:javascript}
 <script>
 var $buoop = {c:2};
 function $buo_f(){

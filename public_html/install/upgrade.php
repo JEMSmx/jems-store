@@ -4,9 +4,10 @@
   ob_start();
 
   require_once('../includes/config.inc.php');
+  require_once('../includes/error_handler.inc.php');
+  require_once('../includes/library/lib_database.inc.php');
   require_once('includes/header.inc.php');
   require_once('includes/functions.inc.php');
-  require_once('includes/database.class.php');
 
 // Turn on errors
   error_reporting(version_compare(PHP_VERSION, '5.4.0', '>=') ? E_ALL & ~E_STRICT : E_ALL);
@@ -25,15 +26,13 @@
 
   if (!PLATFORM_VERSION) die('Could not identify target version.');
 
-  $database = new database(null);
-
 // Get current platform database version
-  $platform_database_version_query = $database->query(
+  $platform_database_version_query = database::query(
     "select `value` from ". DB_TABLE_SETTINGS ."
     where `key` = 'platform_database_version'
     limit 1;"
   );
-  $platform_database_version = $database->fetch($platform_database_version_query);
+  $platform_database_version = database::fetch($platform_database_version_query);
 
   if (!empty($platform_database_version)) {
     define('PLATFORM_DATABASE_VERSION', $platform_database_version['value']);
@@ -69,7 +68,7 @@
 
             foreach ($sql as $query) {
               $query = preg_replace('/--.*\s/', '', $query);
-              $database->query($query);
+              database::query($query);
             }
           echo '<span class="ok">[OK]</span></p>' . PHP_EOL;
         }
@@ -88,9 +87,9 @@
 
     if (defined('PLATFORM_VERSION')) {
 
-      $database->query(
+      database::query(
         "update ". str_replace('`lc_', '`'.DB_TABLE_PREFIX, '`lc_settings`') ."
-        set `value` = '". $database->input(PLATFORM_VERSION) ."'
+        set `value` = '". database::input(PLATFORM_VERSION) ."'
         where `key` = 'platform_database_version'
         limit 1;"
       );
@@ -105,7 +104,7 @@
 
     echo '<p>Clear cache... ';
 
-    $database->query(
+    database::query(
       "update ". DB_TABLE_SETTINGS ."
       set value = '1'
       where `key` = 'cache_clear'
@@ -145,7 +144,7 @@
       <td>Select the <?php echo PLATFORM_NAME; ?> version you are migrating from:<br />
         <select name="from_version">
           <option value="">-- Select Version --</option>
-          <?php foreach ($supported_versions as $version) echo '<option value="'. $version .'">'. $version . ((defined('PLATFORM_DATABASE_VERSION') && PLATFORM_DATABASE_VERSION == $version) ? ' (Detected)' : '') .'</option>' . PHP_EOL; ?>
+          <?php foreach ($supported_versions as $version) echo '<option value="'. $version .'"'. ((isset($_POST['from_version']) && $_POST['from_version'] == $version) ? 'selected="selected"' : '') .'>'. $version . ((defined('PLATFORM_DATABASE_VERSION') && PLATFORM_DATABASE_VERSION == $version) ? ' (Detected)' : '') .'</option>' . PHP_EOL; ?>
         </select>
       </td>
     </tr>
@@ -154,4 +153,3 @@
 </form>
 <?php
   require('includes/footer.inc.php');
-?>

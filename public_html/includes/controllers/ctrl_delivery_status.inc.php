@@ -1,9 +1,10 @@
 <?php
 
   class ctrl_delivery_status {
-    public $data = array();
+    public $data;
 
     public function __construct($delivery_status_id=null) {
+
       if ($delivery_status_id !== null) {
         $this->load((int)$delivery_status_id);
       } else {
@@ -19,7 +20,7 @@
         "show fields from ". DB_TABLE_DELIVERY_STATUSES .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
 
       $info_fields_query = database::query(
@@ -28,28 +29,38 @@
 
       while ($field = database::fetch($info_fields_query)) {
         if (in_array($field['Field'], array('id', 'delivery_status_id', 'language_code'))) continue;
+
         $this->data[$field['Field']] = array();
         foreach (array_keys(language::$languages) as $language_code) {
-          $this->data[$field['Field']][$language_code] = '';
+          $this->data[$field['Field']][$language_code] = null;
         }
       }
     }
 
     public function load($delivery_status_id) {
+
+      $this->reset();
+
       $delivery_status_query = database::query(
         "select * from ". DB_TABLE_DELIVERY_STATUSES ."
         where id = '". (int)$delivery_status_id ."'
         limit 1;"
       );
-      $this->data = database::fetch($delivery_status_query);
-      if (empty($this->data)) trigger_error('Could not find delivery status (ID: '. (int)$delivery_status_id .') in database.', E_USER_ERROR);
+
+      if ($delivery_status = database::fetch($delivery_status_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($delivery_status, $this->data));;
+      } else {
+        trigger_error('Could not find delivery status (ID: '. (int)$delivery_status_id .') in database.', E_USER_ERROR);
+      }
 
       $delivery_status_info_query = database::query(
-        "select name, description, language_code from ". DB_TABLE_DELIVERY_STATUSES_INFO ."
+        "select * from ". DB_TABLE_DELIVERY_STATUSES_INFO ."
         where delivery_status_id = '". (int)$this->data['id'] ."';"
       );
+
       while ($delivery_status_info = database::fetch($delivery_status_info_query)) {
         foreach ($delivery_status_info as $key => $value) {
+          if (in_array($key, array('id', 'delivery_status_id', 'language_code'))) continue;
           $this->data[$key][$delivery_status_info['language_code']] = $value;
         }
       }
@@ -130,5 +141,3 @@
       $this->data['id'] = null;
     }
   }
-
-?>

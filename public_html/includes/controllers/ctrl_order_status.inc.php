@@ -1,9 +1,10 @@
 <?php
 
   class ctrl_order_status {
-    public $data = array();
+    public $data;
 
     public function __construct($order_status_id=null) {
+
       if ($order_status_id !== null) {
         $this->load((int)$order_status_id);
       } else {
@@ -19,7 +20,7 @@
         "show fields from ". DB_TABLE_ORDER_STATUSES .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
 
       $info_fields_query = database::query(
@@ -28,28 +29,38 @@
 
       while ($field = database::fetch($info_fields_query)) {
         if (in_array($field['Field'], array('id', 'order_status_id', 'language_code'))) continue;
+
         $this->data[$field['Field']] = array();
         foreach (array_keys(language::$languages) as $language_code) {
-          $this->data[$field['Field']][$language_code] = '';
+          $this->data[$field['Field']][$language_code] = null;
         }
       }
     }
 
     public function load($order_status_id) {
+
+      $this->reset();
+
       $order_status_query = database::query(
         "select * from ". DB_TABLE_ORDER_STATUSES ."
         where id = '". (int)$order_status_id ."'
         limit 1;"
       );
-      $this->data = database::fetch($order_status_query);
-      if (empty($this->data)) trigger_error('Could not find order_status (ID: '. (int)$order_status_id .') in database.', E_USER_ERROR);
+
+      if ($order_status = database::fetch($order_status_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($order_status, $this->data));
+      } else {
+        trigger_error('Could not find order_status (ID: '. (int)$order_status_id .') in database.', E_USER_ERROR);
+      }
 
       $order_status_info_query = database::query(
-        "select name, description, email_message, language_code from ". DB_TABLE_ORDER_STATUSES_INFO ."
+        "select * from ". DB_TABLE_ORDER_STATUSES_INFO ."
         where order_status_id = '". (int)$this->data['id'] ."';"
       );
+
       while ($order_status_info = database::fetch($order_status_info_query)) {
         foreach ($order_status_info as $key => $value) {
+          if (in_array($key, array('id', 'order_status_id', 'language_code'))) continue;
           $this->data[$key][$order_status_info['language_code']] = $value;
         }
       }
@@ -103,6 +114,7 @@
           set
             name = '". database::input($this->data['name'][$language_code]) ."',
             description = '". database::input($this->data['description'][$language_code]) ."',
+            email_subject = '". database::input($this->data['email_subject'][$language_code], true) ."',
             email_message = '". database::input($this->data['email_message'][$language_code], true) ."'
           where id = '". (int)$order_status_info['id'] ."'
           and order_status_id = '". (int)$this->data['id'] ."'
@@ -137,5 +149,3 @@
       $this->data['id'] = null;
     }
   }
-
-?>

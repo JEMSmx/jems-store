@@ -14,90 +14,36 @@
   }
 
   function reference_get_manufacturer_name($manufacturer_id) {
-
-    $manufacturer_query = database::query(
-      "select name from ". DB_TABLE_MANUFACTURERS ."
-      where id = '". (int)$manufacturer_id ."'
-      limit 1;"
-    );
-    $manufacturer = database::fetch($manufacturer_query);
-
-    return isset($manufacturer['name']) ? $manufacturer['name'] : '';
+    trigger_error(__METHOD__.' is deprecated. Use instead reference::manufacturer($id)->name', E_USER_DEPRECATED);
+    return reference::manufacturer($manufacturer_id)->name;
   }
 
-  function reference_get_country_name($code) {
-
-    $country_query = database::query(
-      "select name from ". DB_TABLE_COUNTRIES ."
-      where iso_code_2 = '". database::input($code) ."'
-      limit 1;"
-    );
-
-    $country = database::fetch($country_query);
-
-    return isset($country['name']) ? $country['name'] : '';
+  function reference_get_country_name($country_code) {
+    trigger_error(__METHOD__.' is deprecated. Use instead reference::country($code)->name', E_USER_DEPRECATED);
+    return reference::country($country_code)->name;
   }
 
-  function reference_get_zone_name($country_code, $code) {
-
-    $zones_query = database::query(
-      "select name from ". DB_TABLE_ZONES ."
-      where country_code = '". database::input($country_code) ."'
-      and code = '". database::input($code) ."'
-      limit 1;"
-    );
-
-    $zone = database::fetch($zones_query);
-
-    return isset($zone['name']) ? $zone['name'] : '';
+  function reference_get_zone_name($country_code, $zone_code) {
+    trigger_error(__METHOD__.' is deprecated. Use instead reference::country($code)->zones[$zone_code][\'name\']', E_USER_DEPRECATED);
+    return isset(reference::country($country_code)->zones[$zone_code]) ? reference::country($country_code)->zones[$zone_code]['name'] : null;
   }
 
   function reference_country_num_zones($country_code) {
-
-    $zones_query = database::query(
-      "select id from ". DB_TABLE_ZONES ."
-      where country_code = '". database::input($country_code) ."';"
-    );
-
-    return database::num_rows($zones_query);
+    trigger_error(__METHOD__.' is deprecated. Use instead count(reference::country($code)->zones)', E_USER_DEPRECATED);
+    return count(reference::country($country_code)->zones);
   }
 
   function reference_verify_zone_code($country_code, $code) {
-
-    $zones_query = database::query(
-      "select id from ". DB_TABLE_ZONES ."
-      where country_code = '". database::input($country_code) ."'
-      and code = '". database::input($code) ."'
-      limit 1;"
-    );
-
-    return database::num_rows($zones_query) ? true : false;
+    trigger_error(__METHOD__.' is deprecated. Use instead isset(reference::country($code)->zones[$zone_code])', E_USER_DEPRECATED);
+    return isset(reference::country($country_code)->zones[$code]);
   }
 
   function reference_get_postcode_required($country_code) {
-
-    $country_query = database::query(
-      "select postcode_format from ". DB_TABLE_COUNTRIES ."
-      where iso_code_2 = '". database::input($country_code) ."'
-      limit 1;"
-    );
-
-    $country = database::fetch($country_query);
-
-    return (!empty($country['postcode_required'])) ? true : false;
+    trigger_error(__METHOD__.' is deprecated. Use instead reference::country($code)->postcode_format', E_USER_DEPRECATED);
+    return !empty(reference::country($country_code)->postcode_format);
   }
 
-  function reference_get_phone_country_code($code) {
-
-    $country_query = database::query(
-      "select phone_code from ". DB_TABLE_COUNTRIES ."
-      where iso_code_2 = '". database::input($code) ."'
-      limit 1;"
-    );
-
-    $country = database::fetch($country_query);
-
-    return isset($country['phone_code']) ? '+'. ltrim($country['phone_code'], '+') : '';
+  function reference_get_phone_country_code($country_code) {
+    trigger_error(__METHOD__.' is deprecated. Use instead reference::country($code)->phone_code', E_USER_DEPRECATED);
+    return '+'. reference::country($country_code)->phone_code;
   }
-
-?>

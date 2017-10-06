@@ -1,9 +1,10 @@
 <?php
 
   class ctrl_country {
-    public $data = array();
+    public $data;
 
     public function __construct($country_code=null) {
+
       if ($country_code !== null) {
         $this->load($country_code);
       } else {
@@ -19,18 +20,27 @@
         "show fields from ". DB_TABLE_COUNTRIES .";"
       );
       while ($field = database::fetch($fields_query)) {
-        $this->data[$field['Field']] = '';
+        $this->data[$field['Field']] = null;
       }
     }
 
     public function load($country_code) {
+
+      $this->reset();
+
+      if (!preg_match('#[A-Z]{2}#', $country_code)) trigger_error('Invalid country code ('. $country_code .')', E_USER_ERROR);
+
       $country_query = database::query(
         "select * from ". DB_TABLE_COUNTRIES ."
         where iso_code_2 = '". database::input($country_code) ."'
         limit 1;"
       );
-      $this->data = database::fetch($country_query);
-      if (empty($this->data)) trigger_error('Could not find country (Code: '. htmlspecialchars($country_code) .') in database.', E_USER_ERROR);
+
+      if ($country = database::fetch($country_query)) {
+        $this->data = array_replace($this->data, array_intersect_key($country, $this->data));
+      } else {
+        trigger_error('Could not find country (Code: '. htmlspecialchars($country_code) .') in database.', E_USER_ERROR);
+      }
 
       $zones_query = database::query(
         "select * from ". DB_TABLE_ZONES ."
@@ -65,6 +75,7 @@
           tax_id_format = '". database::input($this->data['tax_id_format']) ."',
           address_format = '". database::input($this->data['address_format']) ."',
           postcode_format = '". database::input($this->data['postcode_format']) ."',
+          language_code = '". database::input($this->data['language_code']) ."',
           currency_code = '". database::input($this->data['currency_code']) ."',
           phone_code = '". database::input($this->data['phone_code']) ."',
           date_updated = '". date('Y-m-d H:i:s') ."'
@@ -127,5 +138,3 @@
       $this->data['id'] = null;
     }
   }
-
-?>
